@@ -1,23 +1,22 @@
 import { createServer } from 'http';
 import app from './app';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '../lib/prisma';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-const prisma = new PrismaClient();
 const PORT = process.env.PORT || 5000;
 
-// HTTP Server তৈরি করা হলো (ভবিষ্যতে Socket.io এখানে কানেক্ট হবে)
+// HTTP Server to create a server instance for potential future use with WebSockets (e.g., Socket.IO)
 const server = createServer(app);
 
 async function main() {
   try {
-    // ডাটাবেজ কানেকশন চেক
+    // Database Connection Check
     await prisma.$connect();
     console.log('🗄️  PostgreSQL Database connected successfully!');
 
-    // সার্ভার স্টার্ট
+    // Start the server
     server.listen(PORT, () => {
       console.log(`🚀 Server is running on http://localhost:${PORT}`);
     });

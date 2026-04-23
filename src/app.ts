@@ -4,8 +4,8 @@ import { messageRoutes } from './routes/message.routes';
 
 const app: Application = express();
 
-// --- 1. গ্লোবাল মিডলওয়্যার ---
-// ক্লায়েন্ট (Next.js) থেকে কুকি বা সেশন গ্রহণ করার জন্য `credentials: true` সেট করুন।
+// --- 1. Global Middlewares ---
+// To receive cookies or sessions from the client (Next.js), set `credentials: true`.
 app.use(cors({ 
   origin: process.env.CLIENT_URL || 'http://localhost:3000', 
   credentials: true 
@@ -13,11 +13,11 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// --- 2. অ্যাপ্লিকেশন রাউটসমূহ ---
+// --- 2. Application Routes ---
 app.use('/api/v1/messages', messageRoutes);
-// app.use('/api/v1/auth', authRoutes); // অথেন্টিকেশন রাউট (Better Auth) পরে এখানে যোগ করা হবে
+// app.use('/api/v1/auth', authRoutes); // Authentication routes (Better Auth) will be added here later
 
-// মূল রুট (স্বাস্থ্য পরীক্ষা)
+// Root Route (Health Check)
 app.get('/', (req: Request, res: Response) => {
   res.status(200).json({ 
     success: true, 
@@ -25,12 +25,12 @@ app.get('/', (req: Request, res: Response) => {
   });
 });
 
-// --- 3. ৪০৪ Not Found হ্যান্ডলার ---
+// --- 3. 404 Not Found Handler ---
 app.use((req: Request, res: Response, next: NextFunction) => {
   res.status(404).json({ success: false, message: 'API Route not found' });
 });
 
-// --- 4. গ্লোবাল ত্রুটি হ্যান্ডলার ---
+// --- 4. Global Error Handler ---
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   const statusCode = err.statusCode || 500;
   res.status(statusCode).json({
