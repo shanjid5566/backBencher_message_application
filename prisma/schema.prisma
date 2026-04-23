@@ -1,0 +1,133 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// --- Auth Models (Required for Better Auth) ---
+
+model User {
+  id            String   @id @default(uuid())
+  name          String
+  email         String   @unique
+  emailVerified Boolean  @default(false)
+  image         String? // Cloudinary URL
+  isOnline      Boolean  @default(false)
+  lastSeen      DateTime @default(now())
+
+  sessions Session[]
+  accounts Account[]
+
+  conversations Conversation[]
+  messages      Message[]
+  sentCalls     CallLog[]      @relation("Caller")
+  receivedCalls CallLog[]      @relation("Receiver")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String   @unique
+  expiresAt DateTime
+  ipAddress String?
+  userAgent String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Account {
+  id           String    @id @default(uuid())
+  userId       String
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accountId    String
+  providerId   String
+  accessToken  String?
+  refreshToken String?
+  expiresAt    DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// --- Messaging & Communication Models ---
+
+model Conversation {
+  id         String  @id @default(uuid())
+  isGroup    Boolean @default(false)
+  name       String?
+  groupImage String?
+
+  users    User[]
+  messages Message[]
+  calls    CallLog[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Message {
+  id       String  @id @default(uuid())
+  body     String?
+  fileUrl  String? // General field for images/videos/audio files
+  fileType String? // e.g., "IMAGE", "VIDEO", "FILE"
+
+  isSeen Boolean @default(false)
+
+  senderId String
+  sender   User   @relation(fields: [senderId], references: [id])
+
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([conversationId]) // Optimized for fetching chat history
+}
+
+model CallLog {
+  id       String   @id @default(uuid())
+  callType CallType @default(AUDIO)
+
+  callerId String
+  caller   User   @relation("Caller", fields: [callerId], references: [id])
+
+  receiverId String
+  receiver   User   @relation("Receiver", fields: [receiverId], references: [id])
+
+  conversationId String?
+  conversation   Conversation? @relation(fields: [conversationId], references: [id])
+
+  startTime DateTime  @default(now())
+  endTime   DateTime?
+  duration  Int? // Duration in seconds
+
+  recordingUrl String? // Cloudinary URL for the recorded call
+  status       CallStatus @default(MISSED)
+
+  createdAt DateTime @default(now())
+}
+
+enum CallType {
+  AUDIO
+  VIDEO
+}
+
+enum CallStatus {
+  COMPLETED
+  MISSED
+  REJECTED
+  BUSY
+}
