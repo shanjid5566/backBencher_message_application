@@ -13,6 +13,12 @@ export const auth = betterAuth({
   }),
   emailAndPassword: {
     enabled: true,
+    minPasswordLength: 8,
+    maxPasswordLength: 100,
   },
-//   Social providers can be added here in the future, e.g., Google, GitHub, etc.
+  session: {
+    expiresIn: 60 * 60 * 24 * 7, // 7 days (Acts like a Refresh Token)
+    updateAge: 60 * 60 * 24,     // 1 day (Acts like Access Token rotation)
+  },
+  // Social providers can be added here in the future, e.g., Google, GitHub, etc.
 });

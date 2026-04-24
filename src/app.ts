@@ -5,9 +5,13 @@ import { messageRoutes } from "./routes/message.routes";
 import { auth } from "../lib/auth";
 import { toNodeHandler } from "better-auth/node";
 
+// Import Rate Limiter
+import rateLimit from "express-rate-limit";
+
+// Create Express application instance
 const app: Application = express();
 
-// --- 1. Global Middlewares ---
+// ---  Global Middlewares ---
 // To receive cookies or sessions from the client (Next.js), set `credentials: true`.
 app.use(
   cors({
@@ -18,10 +22,23 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+
+// --- Security Middleware (Rate Limiting) ---
+// Limits authentication requests to 10 per 15 minutes per IP
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, 
+  max: 10, 
+  message: { 
+    success: false, 
+    message: 'Too many authentication attempts. Please try again after 15 minutes.' 
+  }
+});
 // --- Better Auth Route ---
+// Apply the rate limiter ONLY to auth routes
+app.use('/api/auth/*path', authLimiter);
 app.all("/api/auth/*path", toNodeHandler(auth));
 
-// --- 2. Application Routes ---
+// ---  Application Routes ---
 app.use("/api/v1/messages", messageRoutes);
 // app.use('/api/v1/auth', authRoutes); // Authentication routes (Better Auth) will be added here later
 
