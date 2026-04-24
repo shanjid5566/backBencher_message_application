@@ -2,11 +2,15 @@ import { createServer } from 'http';
 import app from './app';
 import { prisma } from '../lib/prisma';
 import { config } from './config';
+import { initSocket } from '../lib/socket';
 
 const PORT = config.port;
 
-// HTTP Server to create a server instance for potential future use with WebSockets (e.g., Socket.IO)
+// HTTP Server
 const server = createServer(app);
+
+// Initialize Socket.IO here BEFORE starting the server
+initSocket(server);
 
 async function main() {
   try {
