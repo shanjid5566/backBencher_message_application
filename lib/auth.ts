@@ -30,10 +30,17 @@ export const auth = betterAuth({
 
   hooks: {
     after: createAuthMiddleware(async (ctx) => {
-      // 1. Log the path to see exactly what Better Auth is receiving
-      console.log(`🔍 Auth Hook Tracking: ${ctx.path}`);
+      // Only trace important auth actions in development to avoid noisy logs.
+      const isAuthAction =
+        ctx.path.endsWith("/sign-in/email") ||
+        ctx.path.includes("sign-in") ||
+        ctx.path.includes("sign-up") ||
+        ctx.path.includes("verify-email");
 
-      // 2. Using endsWith and includes for foolproof path matching
+      if (config.env === "development" && isAuthAction) {
+        console.log(`🔍 Auth Hook Tracking: ${ctx.path}`);
+      }
+
       if (ctx.path.endsWith("/sign-in/email") || ctx.path.includes("sign-in")) {
         // Better Auth stores the newly created session in context
         const session = ctx.context.newSession;
