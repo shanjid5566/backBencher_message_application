@@ -3,38 +3,36 @@ import catchAsync from '../utils/catchAsync';
 import { messageService } from '../services/message.service';
 import AppError from '../utils/AppError';
 
-type RequestWithUserAndFile = Request & {
+// Extending Request type to include user and file info
+type AuthenticatedRequest = Request & {
   user?: { id: string };
-  file?: {
-    path: string;
-    mimetype: string;
-  };
+  file?: { path: string; mimetype: string };
 };
 
 const sendTextMessage = catchAsync(async (req: Request, res: Response) => {
   const { conversationId, body } = req.body;
-  const user = (req as RequestWithUserAndFile).user;
+  const user = (req as AuthenticatedRequest).user;
 
   const result = await messageService.sendMessage({
     body,
-    senderId: user!.id,
+    senderId: user!.id, // Securely pulled from the authenticated session
     conversationId,
   });
 
   res.status(201).json({
     success: true,
-    message: 'Text message sent successfully',
+    message: 'Message sent successfully',
     data: result,
   });
 });
 
 const sendFileMessage = catchAsync(async (req: Request, res: Response) => {
   const { conversationId, body } = req.body;
-  const request = req as RequestWithUserAndFile;
+  const request = req as AuthenticatedRequest;
   const user = request.user;
 
   if (!request.file) {
-    throw new AppError(400, 'File upload failed or no file provided');
+    throw new AppError(400, 'File upload failed');
   }
 
   const fileUrl = request.file.path;
@@ -44,24 +42,18 @@ const sendFileMessage = catchAsync(async (req: Request, res: Response) => {
     body,
     fileUrl,
     fileType,
-    senderId: user!.id, // Securely getting ID from session
+    senderId: user!.id,
     conversationId,
   });
 
   res.status(201).json({
     success: true,
-    message: 'File message sent successfully',
+    message: 'File sent successfully',
     data: result,
   });
-});
-
-const getMessages = catchAsync(async (req: Request, res: Response) => {
-    // Logic for fetching messages using req.query (validated by Joi)
-    // Implementation depends on your service layer
 });
 
 export const messageController = {
   sendTextMessage,
   sendFileMessage,
-  getMessages
 };

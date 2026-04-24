@@ -7,7 +7,7 @@ const sendMessage = async (payload: {
   senderId: string;
   conversationId: string;
 }) => {
-  const result = await prisma.message.create({
+  return await prisma.message.create({
     data: {
       body: payload.body,
       fileUrl: payload.fileUrl,
@@ -17,19 +17,23 @@ const sendMessage = async (payload: {
     },
     include: {
       sender: {
-        select: {
-          id: true,
-          name: true,
-          image: true,
-        },
+        select: { id: true, name: true, image: true },
       },
     },
   });
+};
 
-  // Future: Emit socket event here for real-time update
-  return result;
+const deleteMessage = async (messageId: string, userId: string) => {
+  // This will trigger the global prisma middleware to perform a soft delete
+  return await prisma.message.delete({
+    where: {
+      id: messageId,
+      senderId: userId,
+    },
+  });
 };
 
 export const messageService = {
   sendMessage,
+  deleteMessage,
 };

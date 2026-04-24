@@ -14,14 +14,23 @@ datasource db {
 
 // --- Auth Models (Required for Better Auth) ---
 
+enum UserRole {
+  ADMIN
+  USER
+}
+
 model User {
   id            String   @id @default(uuid())
   name          String
   email         String   @unique
+  role          UserRole @default(USER)
   emailVerified Boolean  @default(false)
   image         String? // Cloudinary URL
   isOnline      Boolean  @default(false)
   lastSeen      DateTime @default(now())
+
+  // Soft Delete Field
+  deletedAt DateTime?
 
   sessions Session[]
   accounts Account[]
@@ -71,6 +80,9 @@ model Conversation {
   name       String?
   groupImage String?
 
+  // Soft Delete Field
+  deletedAt DateTime?
+
   users    User[]
   messages Message[]
   calls    CallLog[]
@@ -86,6 +98,9 @@ model Message {
   fileType String? // e.g., "IMAGE", "VIDEO", "FILE"
 
   isSeen Boolean @default(false)
+
+  // Soft Delete Field
+  deletedAt DateTime?
 
   senderId String
   sender   User   @relation(fields: [senderId], references: [id])
