@@ -1,13 +1,12 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "./prisma";
-
-const serverUrl = process.env.BETTER_AUTH_URL || "http://localhost:5000";
-const clientUrl = process.env.CLIENT_URL || "http://localhost:3000";
+import { sendVerificationEmailTemplate } from "./email";
+import { config } from "../src/config";
 
 export const auth = betterAuth({
-  baseURL: serverUrl,
-  trustedOrigins: [serverUrl, clientUrl],
+  baseURL: config.auth.url,
+  trustedOrigins: [config.auth.url, config.clientUrl],
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
@@ -17,8 +16,13 @@ export const auth = betterAuth({
     maxPasswordLength: 100,
   },
   session: {
-    expiresIn: 60 * 60 * 24 * 7, // 7 days (Acts like a Refresh Token)
-    updateAge: 60 * 60 * 24,     // 1 day (Acts like Access Token rotation)
+    expiresIn: 60 * 60 * 24 * 7,
+    updateAge: 60 * 60 * 24,
   },
-  // Social providers can be added here in the future, e.g., Google, GitHub, etc.
+  emailVerification: {
+    sendOnSignUp: true,
+    sendVerificationEmail: async ({ user, url }) => {
+      await sendVerificationEmailTemplate(user.email, user.name, url);
+    },
+  },
 });

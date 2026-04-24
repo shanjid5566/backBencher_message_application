@@ -4,6 +4,7 @@ import { messageRoutes } from "./routes/message.routes";
 
 import { auth } from "../lib/auth";
 import { toNodeHandler } from "better-auth/node";
+import { config } from "./config";
 
 // Import Rate Limiter
 import rateLimit from "express-rate-limit";
@@ -15,7 +16,7 @@ const app: Application = express();
 // To receive cookies or sessions from the client (Next.js), set `credentials: true`.
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "http://localhost:3000",
+    origin: config.clientUrl,
     credentials: true,
   }),
 );
@@ -61,7 +62,7 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   res.status(statusCode).json({
     success: false,
     message: err.message || "Internal Server Error",
-    stack: process.env.NODE_ENV === "development" ? err.stack : undefined,
+    stack: config.env === "development" ? err.stack : undefined,
   });
 });
 

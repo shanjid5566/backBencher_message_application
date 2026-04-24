@@ -1,11 +1,9 @@
 import { createServer } from 'http';
 import app from './app';
 import { prisma } from '../lib/prisma';
-import dotenv from 'dotenv';
+import { config } from './config';
 
-dotenv.config();
-
-const PORT = process.env.PORT || 5000;
+const PORT = config.port;
 
 // HTTP Server to create a server instance for potential future use with WebSockets (e.g., Socket.IO)
 const server = createServer(app);
