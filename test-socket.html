@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Socket.IO Test</title>
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+</head>
+<body>
+  <h1>Socket.IO Connection Test</h1>
+  <button onclick="connectSocket()">Connect & Go Online</button>
+  <button onclick="disconnectSocket()">Disconnect</button>
+
+  <script>
+    let socket;
+    // Replace this with an actual user ID from your database!
+    const mockUserId = "l5pP97pZM4AjksYBXAFDhjzfzpbsTcaa"; 
+
+    function connectSocket() {
+      // Connect to your backend server port
+      socket = io("http://localhost:5000", {
+        withCredentials: true
+      });
+
+      socket.on("connect", () => {
+        console.log("Connected to server! Socket ID:", socket.id);
+        
+        // Tell the server this user is online
+        socket.emit("user_connected", mockUserId);
+        alert("Connected! Check your backend terminal.");
+      });
+
+      // Listen for other users' status changes
+      socket.on("user_status_changed", (data) => {
+        console.log("Status update from another user:", data);
+      });
+    }
+
+    function disconnectSocket() {
+      if (socket) {
+        socket.disconnect();
+        console.log("Disconnected from server.");
+        alert("Disconnected! Check your backend terminal.");
+      }
+    }
+  </script>
+</body>
+</html>

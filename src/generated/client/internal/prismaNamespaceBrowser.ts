@@ -79,10 +79,12 @@ export const UserScalarFieldEnum = {
   id: 'id',
   name: 'name',
   email: 'email',
+  role: 'role',
   emailVerified: 'emailVerified',
   image: 'image',
   isOnline: 'isOnline',
   lastSeen: 'lastSeen',
+  deletedAt: 'deletedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -125,6 +127,7 @@ export const ConversationScalarFieldEnum = {
   isGroup: 'isGroup',
   name: 'name',
   groupImage: 'groupImage',
+  deletedAt: 'deletedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -138,6 +141,7 @@ export const MessageScalarFieldEnum = {
   fileUrl: 'fileUrl',
   fileType: 'fileType',
   isSeen: 'isSeen',
+  deletedAt: 'deletedAt',
   senderId: 'senderId',
   conversationId: 'conversationId',
   createdAt: 'createdAt'

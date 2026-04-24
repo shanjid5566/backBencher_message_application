@@ -896,10 +896,12 @@ export const UserScalarFieldEnum = {
   id: 'id',
   name: 'name',
   email: 'email',
+  role: 'role',
   emailVerified: 'emailVerified',
   image: 'image',
   isOnline: 'isOnline',
   lastSeen: 'lastSeen',
+  deletedAt: 'deletedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -942,6 +944,7 @@ export const ConversationScalarFieldEnum = {
   isGroup: 'isGroup',
   name: 'name',
   groupImage: 'groupImage',
+  deletedAt: 'deletedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -955,6 +958,7 @@ export const MessageScalarFieldEnum = {
   fileUrl: 'fileUrl',
   fileType: 'fileType',
   isSeen: 'isSeen',
+  deletedAt: 'deletedAt',
   senderId: 'senderId',
   conversationId: 'conversationId',
   createdAt: 'createdAt'
@@ -1021,6 +1025,20 @@ export type StringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 
  * Reference to a field of type 'String[]'
  */
 export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String[]'>
+    
+
+
+/**
+ * Reference to a field of type 'UserRole'
+ */
+export type EnumUserRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserRole'>
+    
+
+
+/**
+ * Reference to a field of type 'UserRole[]'
+ */
+export type ListEnumUserRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserRole[]'>
     
 
 

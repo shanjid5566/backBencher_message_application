@@ -30,6 +30,7 @@ export type MessageMinAggregateOutputType = {
   fileUrl: string | null
   fileType: string | null
   isSeen: boolean | null
+  deletedAt: Date | null
   senderId: string | null
   conversationId: string | null
   createdAt: Date | null
@@ -41,6 +42,7 @@ export type MessageMaxAggregateOutputType = {
   fileUrl: string | null
   fileType: string | null
   isSeen: boolean | null
+  deletedAt: Date | null
   senderId: string | null
   conversationId: string | null
   createdAt: Date | null
@@ -52,6 +54,7 @@ export type MessageCountAggregateOutputType = {
   fileUrl: number
   fileType: number
   isSeen: number
+  deletedAt: number
   senderId: number
   conversationId: number
   createdAt: number
@@ -65,6 +68,7 @@ export type MessageMinAggregateInputType = {
   fileUrl?: true
   fileType?: true
   isSeen?: true
+  deletedAt?: true
   senderId?: true
   conversationId?: true
   createdAt?: true
@@ -76,6 +80,7 @@ export type MessageMaxAggregateInputType = {
   fileUrl?: true
   fileType?: true
   isSeen?: true
+  deletedAt?: true
   senderId?: true
   conversationId?: true
   createdAt?: true
@@ -87,6 +92,7 @@ export type MessageCountAggregateInputType = {
   fileUrl?: true
   fileType?: true
   isSeen?: true
+  deletedAt?: true
   senderId?: true
   conversationId?: true
   createdAt?: true
@@ -171,6 +177,7 @@ export type MessageGroupByOutputType = {
   fileUrl: string | null
   fileType: string | null
   isSeen: boolean
+  deletedAt: Date | null
   senderId: string
   conversationId: string
   createdAt: Date
@@ -203,6 +210,7 @@ export type MessageWhereInput = {
   fileUrl?: Prisma.StringNullableFilter<"Message"> | string | null
   fileType?: Prisma.StringNullableFilter<"Message"> | string | null
   isSeen?: Prisma.BoolFilter<"Message"> | boolean
+  deletedAt?: Prisma.DateTimeNullableFilter<"Message"> | Date | string | null
   senderId?: Prisma.StringFilter<"Message"> | string
   conversationId?: Prisma.StringFilter<"Message"> | string
   createdAt?: Prisma.DateTimeFilter<"Message"> | Date | string
@@ -216,6 +224,7 @@ export type MessageOrderByWithRelationInput = {
   fileUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   fileType?: Prisma.SortOrderInput | Prisma.SortOrder
   isSeen?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   senderId?: Prisma.SortOrder
   conversationId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -232,6 +241,7 @@ export type MessageWhereUniqueInput = Prisma.AtLeast<{
   fileUrl?: Prisma.StringNullableFilter<"Message"> | string | null
   fileType?: Prisma.StringNullableFilter<"Message"> | string | null
   isSeen?: Prisma.BoolFilter<"Message"> | boolean
+  deletedAt?: Prisma.DateTimeNullableFilter<"Message"> | Date | string | null
   senderId?: Prisma.StringFilter<"Message"> | string
   conversationId?: Prisma.StringFilter<"Message"> | string
   createdAt?: Prisma.DateTimeFilter<"Message"> | Date | string
@@ -245,6 +255,7 @@ export type MessageOrderByWithAggregationInput = {
   fileUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   fileType?: Prisma.SortOrderInput | Prisma.SortOrder
   isSeen?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   senderId?: Prisma.SortOrder
   conversationId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -262,6 +273,7 @@ export type MessageScalarWhereWithAggregatesInput = {
   fileUrl?: Prisma.StringNullableWithAggregatesFilter<"Message"> | string | null
   fileType?: Prisma.StringNullableWithAggregatesFilter<"Message"> | string | null
   isSeen?: Prisma.BoolWithAggregatesFilter<"Message"> | boolean
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Message"> | Date | string | null
   senderId?: Prisma.StringWithAggregatesFilter<"Message"> | string
   conversationId?: Prisma.StringWithAggregatesFilter<"Message"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Message"> | Date | string
@@ -273,6 +285,7 @@ export type MessageCreateInput = {
   fileUrl?: string | null
   fileType?: string | null
   isSeen?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   sender: Prisma.UserCreateNestedOneWithoutMessagesInput
   conversation: Prisma.ConversationCreateNestedOneWithoutMessagesInput
@@ -284,6 +297,7 @@ export type MessageUncheckedCreateInput = {
   fileUrl?: string | null
   fileType?: string | null
   isSeen?: boolean
+  deletedAt?: Date | string | null
   senderId: string
   conversationId: string
   createdAt?: Date | string
@@ -295,6 +309,7 @@ export type MessageUpdateInput = {
   fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isSeen?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sender?: Prisma.UserUpdateOneRequiredWithoutMessagesNestedInput
   conversation?: Prisma.ConversationUpdateOneRequiredWithoutMessagesNestedInput
@@ -306,6 +321,7 @@ export type MessageUncheckedUpdateInput = {
   fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isSeen?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   senderId?: Prisma.StringFieldUpdateOperationsInput | string
   conversationId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -317,6 +333,7 @@ export type MessageCreateManyInput = {
   fileUrl?: string | null
   fileType?: string | null
   isSeen?: boolean
+  deletedAt?: Date | string | null
   senderId: string
   conversationId: string
   createdAt?: Date | string
@@ -328,6 +345,7 @@ export type MessageUpdateManyMutationInput = {
   fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isSeen?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -337,6 +355,7 @@ export type MessageUncheckedUpdateManyInput = {
   fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isSeen?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   senderId?: Prisma.StringFieldUpdateOperationsInput | string
   conversationId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -358,6 +377,7 @@ export type MessageCountOrderByAggregateInput = {
   fileUrl?: Prisma.SortOrder
   fileType?: Prisma.SortOrder
   isSeen?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   senderId?: Prisma.SortOrder
   conversationId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -369,6 +389,7 @@ export type MessageMaxOrderByAggregateInput = {
   fileUrl?: Prisma.SortOrder
   fileType?: Prisma.SortOrder
   isSeen?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   senderId?: Prisma.SortOrder
   conversationId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -380,6 +401,7 @@ export type MessageMinOrderByAggregateInput = {
   fileUrl?: Prisma.SortOrder
   fileType?: Prisma.SortOrder
   isSeen?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   senderId?: Prisma.SortOrder
   conversationId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -475,6 +497,7 @@ export type MessageCreateWithoutSenderInput = {
   fileUrl?: string | null
   fileType?: string | null
   isSeen?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   conversation: Prisma.ConversationCreateNestedOneWithoutMessagesInput
 }
@@ -485,6 +508,7 @@ export type MessageUncheckedCreateWithoutSenderInput = {
   fileUrl?: string | null
   fileType?: string | null
   isSeen?: boolean
+  deletedAt?: Date | string | null
   conversationId: string
   createdAt?: Date | string
 }
@@ -524,6 +548,7 @@ export type MessageScalarWhereInput = {
   fileUrl?: Prisma.StringNullableFilter<"Message"> | string | null
   fileType?: Prisma.StringNullableFilter<"Message"> | string | null
   isSeen?: Prisma.BoolFilter<"Message"> | boolean
+  deletedAt?: Prisma.DateTimeNullableFilter<"Message"> | Date | string | null
   senderId?: Prisma.StringFilter<"Message"> | string
   conversationId?: Prisma.StringFilter<"Message"> | string
   createdAt?: Prisma.DateTimeFilter<"Message"> | Date | string
@@ -535,6 +560,7 @@ export type MessageCreateWithoutConversationInput = {
   fileUrl?: string | null
   fileType?: string | null
   isSeen?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   sender: Prisma.UserCreateNestedOneWithoutMessagesInput
 }
@@ -545,6 +571,7 @@ export type MessageUncheckedCreateWithoutConversationInput = {
   fileUrl?: string | null
   fileType?: string | null
   isSeen?: boolean
+  deletedAt?: Date | string | null
   senderId: string
   createdAt?: Date | string
 }
@@ -581,6 +608,7 @@ export type MessageCreateManySenderInput = {
   fileUrl?: string | null
   fileType?: string | null
   isSeen?: boolean
+  deletedAt?: Date | string | null
   conversationId: string
   createdAt?: Date | string
 }
@@ -591,6 +619,7 @@ export type MessageUpdateWithoutSenderInput = {
   fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isSeen?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   conversation?: Prisma.ConversationUpdateOneRequiredWithoutMessagesNestedInput
 }
@@ -601,6 +630,7 @@ export type MessageUncheckedUpdateWithoutSenderInput = {
   fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isSeen?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   conversationId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -611,6 +641,7 @@ export type MessageUncheckedUpdateManyWithoutSenderInput = {
   fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isSeen?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   conversationId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -621,6 +652,7 @@ export type MessageCreateManyConversationInput = {
   fileUrl?: string | null
   fileType?: string | null
   isSeen?: boolean
+  deletedAt?: Date | string | null
   senderId: string
   createdAt?: Date | string
 }
@@ -631,6 +663,7 @@ export type MessageUpdateWithoutConversationInput = {
   fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isSeen?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sender?: Prisma.UserUpdateOneRequiredWithoutMessagesNestedInput
 }
@@ -641,6 +674,7 @@ export type MessageUncheckedUpdateWithoutConversationInput = {
   fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isSeen?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   senderId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -651,6 +685,7 @@ export type MessageUncheckedUpdateManyWithoutConversationInput = {
   fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isSeen?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   senderId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -663,6 +698,7 @@ export type MessageSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   fileUrl?: boolean
   fileType?: boolean
   isSeen?: boolean
+  deletedAt?: boolean
   senderId?: boolean
   conversationId?: boolean
   createdAt?: boolean
@@ -676,6 +712,7 @@ export type MessageSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   fileUrl?: boolean
   fileType?: boolean
   isSeen?: boolean
+  deletedAt?: boolean
   senderId?: boolean
   conversationId?: boolean
   createdAt?: boolean
@@ -689,6 +726,7 @@ export type MessageSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   fileUrl?: boolean
   fileType?: boolean
   isSeen?: boolean
+  deletedAt?: boolean
   senderId?: boolean
   conversationId?: boolean
   createdAt?: boolean
@@ -702,12 +740,13 @@ export type MessageSelectScalar = {
   fileUrl?: boolean
   fileType?: boolean
   isSeen?: boolean
+  deletedAt?: boolean
   senderId?: boolean
   conversationId?: boolean
   createdAt?: boolean
 }
 
-export type MessageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "body" | "fileUrl" | "fileType" | "isSeen" | "senderId" | "conversationId" | "createdAt", ExtArgs["result"]["message"]>
+export type MessageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "body" | "fileUrl" | "fileType" | "isSeen" | "deletedAt" | "senderId" | "conversationId" | "createdAt", ExtArgs["result"]["message"]>
 export type MessageInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   sender?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   conversation?: boolean | Prisma.ConversationDefaultArgs<ExtArgs>
@@ -733,6 +772,7 @@ export type $MessagePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     fileUrl: string | null
     fileType: string | null
     isSeen: boolean
+    deletedAt: Date | null
     senderId: string
     conversationId: string
     createdAt: Date
@@ -1166,6 +1206,7 @@ export interface MessageFieldRefs {
   readonly fileUrl: Prisma.FieldRef<"Message", 'String'>
   readonly fileType: Prisma.FieldRef<"Message", 'String'>
   readonly isSeen: Prisma.FieldRef<"Message", 'Boolean'>
+  readonly deletedAt: Prisma.FieldRef<"Message", 'DateTime'>
   readonly senderId: Prisma.FieldRef<"Message", 'String'>
   readonly conversationId: Prisma.FieldRef<"Message", 'String'>
   readonly createdAt: Prisma.FieldRef<"Message", 'DateTime'>
