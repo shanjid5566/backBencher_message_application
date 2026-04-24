@@ -26,12 +26,27 @@ export const initSocket = (server: HttpServer) => {
 
     // 1. Listen for connection
     socket.on("user_connected", async (userId: string) => {
-      if (!userId) return;
+      if (!userId) {
+        console.warn("⚠️  user_connected event received but no userId provided");
+        return;
+      }
 
       // Map the USER ID to their current SOCKET ID
       userSocketMap.set(userId, socket.id);
+      console.log(`📌 User ${userId} mapped to socket ${socket.id}`);
+      console.log(`📊 Current user socket map:`, Array.from(userSocketMap.entries()));
 
       try {
+        const existingUser = await prisma.user.findUnique({
+          where: { id: userId },
+          select: { id: true },
+        });
+
+        if (!existingUser) {
+          console.warn(`⚠️  User ${userId} not found in database. Skipping online status update.`);
+          return;
+        }
+
         await prisma.user.update({
           where: { id: userId },
           data: { isOnline: true },
@@ -43,7 +58,12 @@ export const initSocket = (server: HttpServer) => {
         });
 
         console.log(`✅ User ${userId} is now ONLINE`);
-      } catch (error) {
+      } catch (error: any) {
+        if (error.code === "P1017") {
+          console.warn("⚠️  DB connection closed while setting online status.");
+          return;
+        }
+
         console.error("Failed to update online status:", error);
       }
     });
@@ -91,6 +111,16 @@ export const initSocket = (server: HttpServer) => {
       const userId = [...userSocketMap.entries()].find(([_, sid]) => sid === socket.id)?.[0];
 
       if (userId) {
+        const currentlyMappedSocketId = userSocketMap.get(userId);
+
+        // If another active socket already replaced this one, do not mark the user offline.
+        if (currentlyMappedSocketId !== socket.id) {
+          return;
+        }
+
+        // Remove stale mapping first so emit routing remains correct even if DB update fails.
+        userSocketMap.delete(userId);
+
         try {
           await prisma.user.update({
             where: { id: userId },
@@ -107,10 +137,17 @@ export const initSocket = (server: HttpServer) => {
           });
 
           console.log(`❌ User ${userId} is now OFFLINE`);
-          
-          // Remove from tracking map
-          userSocketMap.delete(userId);
-        } catch (error) {
+        } catch (error: any) {
+          if (error.code === "P2025") {
+            console.warn(`⚠️  User ${userId} not found in database. Skipping offline status update.`);
+            return;
+          }
+
+          if (error.code === "P1017") {
+            console.warn("⚠️  DB connection closed while setting offline status.");
+            return;
+          }
+
           console.error("Failed to update offline status:", error);
         }
       }

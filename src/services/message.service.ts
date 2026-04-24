@@ -51,7 +51,7 @@ const getMessages = async (
       },
     },
     orderBy: {
-      createdAt: "desc", // Load the newest messages first (standard for chat apps)
+      createdAt: "asc", // Chronological order: oldest at top, newest at bottom
     },
     take: limit,
     skip: skip,

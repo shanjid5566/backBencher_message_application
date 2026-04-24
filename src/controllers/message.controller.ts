@@ -3,7 +3,7 @@ import catchAsync from '../utils/catchAsync';
 import { messageService } from '../services/message.service';
 import AppError from '../utils/AppError';
 import { prisma } from '../../lib/prisma';
-import { getIo, getReceiverSocketId } from '../../lib/socket'; // 👈 Import socket utilities
+import { getIo, getReceiverSocketId } from '../../lib/socket';
 
 type AuthenticatedRequest = Request & {
   user?: { id: string };
@@ -22,24 +22,23 @@ const sendTextMessage = catchAsync(async (req: Request, res: Response) => {
   });
 
   // 2. REAL-TIME SOCKET LOGIC
-  // Fetch the conversation to find who else is in this chat (to send them the message)
   const conversation = await prisma.conversation.findUnique({
     where: { id: conversationId },
     include: { users: true },
   });
 
   if (conversation) {
-    // Find all users in this conversation EXCEPT the sender
     const receivers = conversation.users.filter((u) => u.id !== user!.id);
+    console.log(`📤 Broadcasting message to ${receivers.length} receivers in conversation ${conversationId}`);
 
-    // Loop through receivers (useful if it's a group chat)
     receivers.forEach((receiver) => {
       const receiverSocketId = getReceiverSocketId(receiver.id);
+      console.log(`📍 Checking receiver ${receiver.id}: Socket ID = ${receiverSocketId || 'NOT_CONNECTED'}`);
       
-      // If the receiver is online, emit the message directly to them
       if (receiverSocketId) {
         const io = getIo();
         io.to(receiverSocketId).emit('new_message', result);
+        console.log(`✅ Message emitted to receiver ${receiver.id}`);
       }
     });
   }
@@ -72,7 +71,7 @@ const sendFileMessage = catchAsync(async (req: Request, res: Response) => {
     conversationId,
   });
 
-  // 2. REAL-TIME SOCKET LOGIC (Same as text message)
+  // 2. REAL-TIME SOCKET LOGIC
   const conversation = await prisma.conversation.findUnique({
     where: { id: conversationId },
     include: { users: true },
@@ -95,14 +94,18 @@ const sendFileMessage = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+
 const getMessages = catchAsync(async (req: Request, res: Response) => {
-  // Query parameters are already validated by Joi (messageQuerySchema)
-  const { conversationId, page, limit } = req.query as any;
+  const { conversationId } = req.query;
+
+  // 👇 এখানেই মূল ফিক্সটি করা হয়েছে (Default parameters)
+  const page = req.query.page ? parseInt(req.query.page as string) : 1;
+  const limit = req.query.limit ? parseInt(req.query.limit as string) : 50;
 
   const result = await messageService.getMessages(
-    conversationId,
-    parseInt(page),
-    parseInt(limit)
+    conversationId as string,
+    page,
+    limit
   );
 
   res.status(200).json({
@@ -111,6 +114,7 @@ const getMessages = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+
 export const messageController = {
   sendTextMessage,
   sendFileMessage,

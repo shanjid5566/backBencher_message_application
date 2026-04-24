@@ -1,27 +1,22 @@
-import { Router } from 'express';
-import { upload } from '../config/cloudinary.config';
-import { messageController } from '../controllers/message.controller';
-import { validateRequest } from '../middleware/validateRequest';
-import { protect } from '../middleware/auth.middleware';
-import { sendFileMessageSchema, sendTextMessageSchema } from '../schemas/message.schema';
+import { Router } from "express";
+import { protect } from "../middleware/auth.middleware";
+import { messageController } from "../controllers/message.controller";
+import { upload } from "../middleware/upload.middleware";
 
 const router = Router();
 
-// Route for text messages (Requires Authentication + Joi Validation)
-router.post(
-  '/send-text',
-  protect,
-  validateRequest(sendTextMessageSchema),
-  messageController.sendTextMessage
-);
+// Fetch message history for a specific conversation with pagination
+router.get("/", protect, messageController.getMessages);
 
-// Route for file messages (Requires Authentication + Cloudinary + Joi Validation)
+// Send a standard text message
+router.post("/send-text", protect, messageController.sendTextMessage);
+
+// Send a message containing a file or image
 router.post(
-  '/send-file',
+  "/send-file",
   protect,
-  upload.single('file'),
-  validateRequest(sendFileMessageSchema),
-  messageController.sendFileMessage
+  upload.single("file"),
+  messageController.sendFileMessage,
 );
 
 export const messageRoutes = router;

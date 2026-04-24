@@ -1,6 +1,8 @@
 import express, { Application, Request, Response, NextFunction } from "express";
 import cors from "cors";
+import path from 'path';
 import { messageRoutes } from "./routes/message.routes";
+
 
 import { auth } from "../lib/auth";
 import { toNodeHandler } from "better-auth/node";
@@ -9,6 +11,7 @@ import { config } from "./config";
 // Import Rate Limiter
 import rateLimit from "express-rate-limit";
 import { conversationRoutes } from "./routes/conversation.routes";
+import { userRoutes } from './routes/user.routes';
 
 // Create Express application instance
 const app: Application = express();
@@ -26,10 +29,11 @@ app.use(express.urlencoded({ extended: true }));
 
 
 // --- Security Middleware (Rate Limiting) ---
-// Limits authentication requests to 10 per 15 minutes per IP
+// Stricter limit for authentication actions (login, signup, etc.)
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, 
-  max: 10, 
+  max: 50, 
+  skip: (req) => req.method === 'GET', // Skip rate limiting for GET requests (session checks)
   message: { 
     success: false, 
     message: 'Too many authentication attempts. Please try again after 15 minutes.' 
@@ -43,7 +47,10 @@ app.all("/api/auth/*path", toNodeHandler(auth));
 // ---  Application Routes ---
 app.use("/api/v1/messages", messageRoutes);
 app.use("/api/v1/conversations", conversationRoutes);
+app.use("/api/v1/users", userRoutes);
 // app.use('/api/v1/auth', authRoutes); // Authentication routes (Better Auth) will be added here later
+// Serve static files from the uploads directory
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // Root Route (Health Check)
 app.get("/", (req: Request, res: Response) => {
