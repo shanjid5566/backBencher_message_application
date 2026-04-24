@@ -14,6 +14,7 @@ const sendFileMessage = catchAsync(async (req: Request, res: Response) => {
   const { senderId, conversationId, body } = req.body;
   const request = req as RequestWithFile;
 
+  // Validated by Joi middleware, but add additional file validation
   if (!request.file) {
     throw new AppError(400, 'File upload failed or no file provided');
   }
