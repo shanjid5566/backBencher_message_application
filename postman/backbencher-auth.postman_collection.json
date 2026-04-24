@@ -1,0 +1,113 @@
+{
+  "info": {
+    "name": "BackBencher Auth API",
+    "description": "Postman collection for Better Auth email/password endpoints.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": {
+      "major": 1,
+      "minor": 0,
+      "patch": 0
+    }
+  },
+  "item": [
+    {
+      "name": "Auth - Sign Up",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Demo User\",\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/sign-up/email",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "sign-up",
+            "email"
+          ]
+        },
+        "description": "Create a new user account with email and password."
+      },
+      "response": []
+    },
+    {
+      "name": "Auth - Sign In",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/sign-in/email",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "sign-in",
+            "email"
+          ]
+        },
+        "description": "Sign in and establish a session cookie."
+      },
+      "response": []
+    },
+    {
+      "name": "Auth - Sign Out",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/sign-out",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "sign-out"
+          ]
+        },
+        "description": "Sign out the current session. Run this after Sign In in the same Postman workspace so cookies are sent automatically."
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000"
+    },
+    {
+      "key": "email",
+      "value": "demo.user@example.com"
+    },
+    {
+      "key": "password",
+      "value": "StrongPass123!"
+    }
+  ]
+}
