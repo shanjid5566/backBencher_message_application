@@ -2,8 +2,9 @@ import { Request, Response } from 'express';
 import catchAsync from '../utils/catchAsync';
 import { messageService } from '../services/message.service';
 import AppError from '../utils/AppError';
+import { prisma } from '../../lib/prisma';
+import { getIo, getReceiverSocketId } from '../../lib/socket'; // 👈 Import socket utilities
 
-// Extending Request type to include user and file info
 type AuthenticatedRequest = Request & {
   user?: { id: string };
   file?: { path: string; mimetype: string };
@@ -13,12 +14,37 @@ const sendTextMessage = catchAsync(async (req: Request, res: Response) => {
   const { conversationId, body } = req.body;
   const user = (req as AuthenticatedRequest).user;
 
+  // 1. Save message to database
   const result = await messageService.sendMessage({
     body,
-    senderId: user!.id, // Securely pulled from the authenticated session
+    senderId: user!.id,
     conversationId,
   });
 
+  // 2. REAL-TIME SOCKET LOGIC
+  // Fetch the conversation to find who else is in this chat (to send them the message)
+  const conversation = await prisma.conversation.findUnique({
+    where: { id: conversationId },
+    include: { users: true },
+  });
+
+  if (conversation) {
+    // Find all users in this conversation EXCEPT the sender
+    const receivers = conversation.users.filter((u) => u.id !== user!.id);
+
+    // Loop through receivers (useful if it's a group chat)
+    receivers.forEach((receiver) => {
+      const receiverSocketId = getReceiverSocketId(receiver.id);
+      
+      // If the receiver is online, emit the message directly to them
+      if (receiverSocketId) {
+        const io = getIo();
+        io.to(receiverSocketId).emit('new_message', result);
+      }
+    });
+  }
+
+  // 3. Send API response
   res.status(201).json({
     success: true,
     message: 'Message sent successfully',
@@ -45,6 +71,23 @@ const sendFileMessage = catchAsync(async (req: Request, res: Response) => {
     senderId: user!.id,
     conversationId,
   });
+
+  // 2. REAL-TIME SOCKET LOGIC (Same as text message)
+  const conversation = await prisma.conversation.findUnique({
+    where: { id: conversationId },
+    include: { users: true },
+  });
+
+  if (conversation) {
+    const receivers = conversation.users.filter((u) => u.id !== user!.id);
+    receivers.forEach((receiver) => {
+      const receiverSocketId = getReceiverSocketId(receiver.id);
+      if (receiverSocketId) {
+        const io = getIo();
+        io.to(receiverSocketId).emit('new_message', result);
+      }
+    });
+  }
 
   res.status(201).json({
     success: true,
