@@ -95,8 +95,24 @@ const sendFileMessage = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+const getMessages = catchAsync(async (req: Request, res: Response) => {
+  // Query parameters are already validated by Joi (messageQuerySchema)
+  const { conversationId, page, limit } = req.query as any;
 
+  const result = await messageService.getMessages(
+    conversationId,
+    parseInt(page),
+    parseInt(limit)
+  );
+
+  res.status(200).json({
+    success: true,
+    message: 'Messages fetched successfully',
+    data: result,
+  });
+});
 export const messageController = {
   sendTextMessage,
   sendFileMessage,
+  getMessages,
 };

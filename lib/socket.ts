@@ -48,6 +48,41 @@ export const initSocket = (server: HttpServer) => {
       }
     });
 
+    // ----------------------------------------------------
+    // TYPING INDICATOR LOGIC
+    // ----------------------------------------------------
+    
+    // Listen for 'typing' event from frontend
+    socket.on("typing", ({ receiverId, conversationId }) => {
+      const receiverSocketId = getReceiverSocketId(receiverId);
+      
+      if (receiverSocketId) {
+        // Find who is typing (sender's user ID)
+        const senderId = [...userSocketMap.entries()].find(([_, sid]) => sid === socket.id)?.[0];
+        
+        // Emit to the receiver that this sender is typing
+        io.to(receiverSocketId).emit("user_typing", {
+          senderId,
+          conversationId
+        });
+      }
+    });
+
+    // Listen for 'stop_typing' event from frontend
+    socket.on("stop_typing", ({ receiverId, conversationId }) => {
+      const receiverSocketId = getReceiverSocketId(receiverId);
+      
+      if (receiverSocketId) {
+        const senderId = [...userSocketMap.entries()].find(([_, sid]) => sid === socket.id)?.[0];
+        
+        io.to(receiverSocketId).emit("user_stopped_typing", {
+          senderId,
+          conversationId
+        });
+      }
+    });
+    // ----------------------------------------------------
+
     // 2. Handle Disconnect
     socket.on("disconnect", async () => {
       console.log("🔴 A user disconnected:", socket.id);
