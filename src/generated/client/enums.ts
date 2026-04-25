@@ -17,6 +17,24 @@ export const UserRole = {
 export type UserRole = (typeof UserRole)[keyof typeof UserRole]
 
 
+export const MessageStatus = {
+  SENT: 'SENT',
+  DELIVERED: 'DELIVERED',
+  SEEN: 'SEEN'
+} as const
+
+export type MessageStatus = (typeof MessageStatus)[keyof typeof MessageStatus]
+
+
+export const MessageType = {
+  TEXT: 'TEXT',
+  FILE: 'FILE',
+  CALL_LOG: 'CALL_LOG'
+} as const
+
+export type MessageType = (typeof MessageType)[keyof typeof MessageType]
+
+
 export const CallType = {
   AUDIO: 'AUDIO',
   VIDEO: 'VIDEO'

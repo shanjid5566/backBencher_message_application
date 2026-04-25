@@ -12,6 +12,7 @@ import { config } from "./config";
 import rateLimit from "express-rate-limit";
 import { conversationRoutes } from "./routes/conversation.routes";
 import { userRoutes } from './routes/user.routes';
+import { callRoutes } from './routes/call.routes';
 
 // Create Express application instance
 const app: Application = express();
@@ -48,6 +49,7 @@ app.all("/api/auth/*path", toNodeHandler(auth));
 app.use("/api/v1/messages", messageRoutes);
 app.use("/api/v1/conversations", conversationRoutes);
 app.use("/api/v1/users", userRoutes);
+app.use("/api/v1/calls", callRoutes);
 // app.use('/api/v1/auth', authRoutes); // Authentication routes (Better Auth) will be added here later
 // Serve static files from the uploads directory
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));

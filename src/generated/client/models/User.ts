@@ -230,6 +230,8 @@ export type UserWhereInput = {
   deletedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  blockedUsers?: Prisma.UserListRelationFilter
+  blockedBy?: Prisma.UserListRelationFilter
   sessions?: Prisma.SessionListRelationFilter
   accounts?: Prisma.AccountListRelationFilter
   conversations?: Prisma.ConversationListRelationFilter
@@ -250,6 +252,8 @@ export type UserOrderByWithRelationInput = {
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  blockedUsers?: Prisma.UserOrderByRelationAggregateInput
+  blockedBy?: Prisma.UserOrderByRelationAggregateInput
   sessions?: Prisma.SessionOrderByRelationAggregateInput
   accounts?: Prisma.AccountOrderByRelationAggregateInput
   conversations?: Prisma.ConversationOrderByRelationAggregateInput
@@ -273,6 +277,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   deletedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  blockedUsers?: Prisma.UserListRelationFilter
+  blockedBy?: Prisma.UserListRelationFilter
   sessions?: Prisma.SessionListRelationFilter
   accounts?: Prisma.AccountListRelationFilter
   conversations?: Prisma.ConversationListRelationFilter
@@ -327,6 +333,8 @@ export type UserCreateInput = {
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  blockedUsers?: Prisma.UserCreateNestedManyWithoutBlockedByInput
+  blockedBy?: Prisma.UserCreateNestedManyWithoutBlockedUsersInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutUsersInput
@@ -347,6 +355,8 @@ export type UserUncheckedCreateInput = {
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  blockedUsers?: Prisma.UserUncheckedCreateNestedManyWithoutBlockedByInput
+  blockedBy?: Prisma.UserUncheckedCreateNestedManyWithoutBlockedUsersInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutUsersInput
@@ -367,6 +377,8 @@ export type UserUpdateInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  blockedUsers?: Prisma.UserUpdateManyWithoutBlockedByNestedInput
+  blockedBy?: Prisma.UserUpdateManyWithoutBlockedUsersNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutUsersNestedInput
@@ -387,6 +399,8 @@ export type UserUncheckedUpdateInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  blockedUsers?: Prisma.UserUncheckedUpdateManyWithoutBlockedByNestedInput
+  blockedBy?: Prisma.UserUncheckedUpdateManyWithoutBlockedUsersNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutUsersNestedInput
@@ -437,6 +451,16 @@ export type UserUncheckedUpdateManyInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+export type UserListRelationFilter = {
+  every?: Prisma.UserWhereInput
+  some?: Prisma.UserWhereInput
+  none?: Prisma.UserWhereInput
+}
+
+export type UserOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
+}
+
 export type UserCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
@@ -484,14 +508,28 @@ export type UserScalarRelationFilter = {
   isNot?: Prisma.UserWhereInput
 }
 
-export type UserListRelationFilter = {
-  every?: Prisma.UserWhereInput
-  some?: Prisma.UserWhereInput
-  none?: Prisma.UserWhereInput
+export type UserCreateNestedManyWithoutBlockedByInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutBlockedByInput, Prisma.UserUncheckedCreateWithoutBlockedByInput> | Prisma.UserCreateWithoutBlockedByInput[] | Prisma.UserUncheckedCreateWithoutBlockedByInput[]
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBlockedByInput | Prisma.UserCreateOrConnectWithoutBlockedByInput[]
+  connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
 }
 
-export type UserOrderByRelationAggregateInput = {
-  _count?: Prisma.SortOrder
+export type UserCreateNestedManyWithoutBlockedUsersInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutBlockedUsersInput, Prisma.UserUncheckedCreateWithoutBlockedUsersInput> | Prisma.UserCreateWithoutBlockedUsersInput[] | Prisma.UserUncheckedCreateWithoutBlockedUsersInput[]
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBlockedUsersInput | Prisma.UserCreateOrConnectWithoutBlockedUsersInput[]
+  connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+}
+
+export type UserUncheckedCreateNestedManyWithoutBlockedByInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutBlockedByInput, Prisma.UserUncheckedCreateWithoutBlockedByInput> | Prisma.UserCreateWithoutBlockedByInput[] | Prisma.UserUncheckedCreateWithoutBlockedByInput[]
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBlockedByInput | Prisma.UserCreateOrConnectWithoutBlockedByInput[]
+  connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+}
+
+export type UserUncheckedCreateNestedManyWithoutBlockedUsersInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutBlockedUsersInput, Prisma.UserUncheckedCreateWithoutBlockedUsersInput> | Prisma.UserCreateWithoutBlockedUsersInput[] | Prisma.UserUncheckedCreateWithoutBlockedUsersInput[]
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBlockedUsersInput | Prisma.UserCreateOrConnectWithoutBlockedUsersInput[]
+  connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
 }
 
 export type StringFieldUpdateOperationsInput = {
@@ -516,6 +554,58 @@ export type DateTimeFieldUpdateOperationsInput = {
 
 export type NullableDateTimeFieldUpdateOperationsInput = {
   set?: Date | string | null
+}
+
+export type UserUpdateManyWithoutBlockedByNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutBlockedByInput, Prisma.UserUncheckedCreateWithoutBlockedByInput> | Prisma.UserCreateWithoutBlockedByInput[] | Prisma.UserUncheckedCreateWithoutBlockedByInput[]
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBlockedByInput | Prisma.UserCreateOrConnectWithoutBlockedByInput[]
+  upsert?: Prisma.UserUpsertWithWhereUniqueWithoutBlockedByInput | Prisma.UserUpsertWithWhereUniqueWithoutBlockedByInput[]
+  set?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  disconnect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  delete?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  update?: Prisma.UserUpdateWithWhereUniqueWithoutBlockedByInput | Prisma.UserUpdateWithWhereUniqueWithoutBlockedByInput[]
+  updateMany?: Prisma.UserUpdateManyWithWhereWithoutBlockedByInput | Prisma.UserUpdateManyWithWhereWithoutBlockedByInput[]
+  deleteMany?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
+}
+
+export type UserUpdateManyWithoutBlockedUsersNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutBlockedUsersInput, Prisma.UserUncheckedCreateWithoutBlockedUsersInput> | Prisma.UserCreateWithoutBlockedUsersInput[] | Prisma.UserUncheckedCreateWithoutBlockedUsersInput[]
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBlockedUsersInput | Prisma.UserCreateOrConnectWithoutBlockedUsersInput[]
+  upsert?: Prisma.UserUpsertWithWhereUniqueWithoutBlockedUsersInput | Prisma.UserUpsertWithWhereUniqueWithoutBlockedUsersInput[]
+  set?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  disconnect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  delete?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  update?: Prisma.UserUpdateWithWhereUniqueWithoutBlockedUsersInput | Prisma.UserUpdateWithWhereUniqueWithoutBlockedUsersInput[]
+  updateMany?: Prisma.UserUpdateManyWithWhereWithoutBlockedUsersInput | Prisma.UserUpdateManyWithWhereWithoutBlockedUsersInput[]
+  deleteMany?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
+}
+
+export type UserUncheckedUpdateManyWithoutBlockedByNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutBlockedByInput, Prisma.UserUncheckedCreateWithoutBlockedByInput> | Prisma.UserCreateWithoutBlockedByInput[] | Prisma.UserUncheckedCreateWithoutBlockedByInput[]
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBlockedByInput | Prisma.UserCreateOrConnectWithoutBlockedByInput[]
+  upsert?: Prisma.UserUpsertWithWhereUniqueWithoutBlockedByInput | Prisma.UserUpsertWithWhereUniqueWithoutBlockedByInput[]
+  set?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  disconnect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  delete?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  update?: Prisma.UserUpdateWithWhereUniqueWithoutBlockedByInput | Prisma.UserUpdateWithWhereUniqueWithoutBlockedByInput[]
+  updateMany?: Prisma.UserUpdateManyWithWhereWithoutBlockedByInput | Prisma.UserUpdateManyWithWhereWithoutBlockedByInput[]
+  deleteMany?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
+}
+
+export type UserUncheckedUpdateManyWithoutBlockedUsersNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutBlockedUsersInput, Prisma.UserUncheckedCreateWithoutBlockedUsersInput> | Prisma.UserCreateWithoutBlockedUsersInput[] | Prisma.UserUncheckedCreateWithoutBlockedUsersInput[]
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBlockedUsersInput | Prisma.UserCreateOrConnectWithoutBlockedUsersInput[]
+  upsert?: Prisma.UserUpsertWithWhereUniqueWithoutBlockedUsersInput | Prisma.UserUpsertWithWhereUniqueWithoutBlockedUsersInput[]
+  set?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  disconnect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  delete?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  update?: Prisma.UserUpdateWithWhereUniqueWithoutBlockedUsersInput | Prisma.UserUpdateWithWhereUniqueWithoutBlockedUsersInput[]
+  updateMany?: Prisma.UserUpdateManyWithWhereWithoutBlockedUsersInput | Prisma.UserUpdateManyWithWhereWithoutBlockedUsersInput[]
+  deleteMany?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
 }
 
 export type UserCreateNestedOneWithoutSessionsInput = {
@@ -626,6 +716,149 @@ export type UserUpdateOneRequiredWithoutReceivedCallsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutReceivedCallsInput, Prisma.UserUpdateWithoutReceivedCallsInput>, Prisma.UserUncheckedUpdateWithoutReceivedCallsInput>
 }
 
+export type UserCreateWithoutBlockedByInput = {
+  id?: string
+  name: string
+  email: string
+  role?: $Enums.UserRole
+  emailVerified?: boolean
+  image?: string | null
+  isOnline?: boolean
+  lastSeen?: Date | string
+  deletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  blockedUsers?: Prisma.UserCreateNestedManyWithoutBlockedByInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  conversations?: Prisma.ConversationCreateNestedManyWithoutUsersInput
+  messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  sentCalls?: Prisma.CallLogCreateNestedManyWithoutCallerInput
+  receivedCalls?: Prisma.CallLogCreateNestedManyWithoutReceiverInput
+}
+
+export type UserUncheckedCreateWithoutBlockedByInput = {
+  id?: string
+  name: string
+  email: string
+  role?: $Enums.UserRole
+  emailVerified?: boolean
+  image?: string | null
+  isOnline?: boolean
+  lastSeen?: Date | string
+  deletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  blockedUsers?: Prisma.UserUncheckedCreateNestedManyWithoutBlockedByInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutUsersInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  sentCalls?: Prisma.CallLogUncheckedCreateNestedManyWithoutCallerInput
+  receivedCalls?: Prisma.CallLogUncheckedCreateNestedManyWithoutReceiverInput
+}
+
+export type UserCreateOrConnectWithoutBlockedByInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutBlockedByInput, Prisma.UserUncheckedCreateWithoutBlockedByInput>
+}
+
+export type UserCreateWithoutBlockedUsersInput = {
+  id?: string
+  name: string
+  email: string
+  role?: $Enums.UserRole
+  emailVerified?: boolean
+  image?: string | null
+  isOnline?: boolean
+  lastSeen?: Date | string
+  deletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  blockedBy?: Prisma.UserCreateNestedManyWithoutBlockedUsersInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  conversations?: Prisma.ConversationCreateNestedManyWithoutUsersInput
+  messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  sentCalls?: Prisma.CallLogCreateNestedManyWithoutCallerInput
+  receivedCalls?: Prisma.CallLogCreateNestedManyWithoutReceiverInput
+}
+
+export type UserUncheckedCreateWithoutBlockedUsersInput = {
+  id?: string
+  name: string
+  email: string
+  role?: $Enums.UserRole
+  emailVerified?: boolean
+  image?: string | null
+  isOnline?: boolean
+  lastSeen?: Date | string
+  deletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  blockedBy?: Prisma.UserUncheckedCreateNestedManyWithoutBlockedUsersInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutUsersInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  sentCalls?: Prisma.CallLogUncheckedCreateNestedManyWithoutCallerInput
+  receivedCalls?: Prisma.CallLogUncheckedCreateNestedManyWithoutReceiverInput
+}
+
+export type UserCreateOrConnectWithoutBlockedUsersInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutBlockedUsersInput, Prisma.UserUncheckedCreateWithoutBlockedUsersInput>
+}
+
+export type UserUpsertWithWhereUniqueWithoutBlockedByInput = {
+  where: Prisma.UserWhereUniqueInput
+  update: Prisma.XOR<Prisma.UserUpdateWithoutBlockedByInput, Prisma.UserUncheckedUpdateWithoutBlockedByInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutBlockedByInput, Prisma.UserUncheckedCreateWithoutBlockedByInput>
+}
+
+export type UserUpdateWithWhereUniqueWithoutBlockedByInput = {
+  where: Prisma.UserWhereUniqueInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutBlockedByInput, Prisma.UserUncheckedUpdateWithoutBlockedByInput>
+}
+
+export type UserUpdateManyWithWhereWithoutBlockedByInput = {
+  where: Prisma.UserScalarWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateManyMutationInput, Prisma.UserUncheckedUpdateManyWithoutBlockedByInput>
+}
+
+export type UserScalarWhereInput = {
+  AND?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
+  OR?: Prisma.UserScalarWhereInput[]
+  NOT?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
+  id?: Prisma.StringFilter<"User"> | string
+  name?: Prisma.StringFilter<"User"> | string
+  email?: Prisma.StringFilter<"User"> | string
+  role?: Prisma.EnumUserRoleFilter<"User"> | $Enums.UserRole
+  emailVerified?: Prisma.BoolFilter<"User"> | boolean
+  image?: Prisma.StringNullableFilter<"User"> | string | null
+  isOnline?: Prisma.BoolFilter<"User"> | boolean
+  lastSeen?: Prisma.DateTimeFilter<"User"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
+}
+
+export type UserUpsertWithWhereUniqueWithoutBlockedUsersInput = {
+  where: Prisma.UserWhereUniqueInput
+  update: Prisma.XOR<Prisma.UserUpdateWithoutBlockedUsersInput, Prisma.UserUncheckedUpdateWithoutBlockedUsersInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutBlockedUsersInput, Prisma.UserUncheckedCreateWithoutBlockedUsersInput>
+}
+
+export type UserUpdateWithWhereUniqueWithoutBlockedUsersInput = {
+  where: Prisma.UserWhereUniqueInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutBlockedUsersInput, Prisma.UserUncheckedUpdateWithoutBlockedUsersInput>
+}
+
+export type UserUpdateManyWithWhereWithoutBlockedUsersInput = {
+  where: Prisma.UserScalarWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateManyMutationInput, Prisma.UserUncheckedUpdateManyWithoutBlockedUsersInput>
+}
+
 export type UserCreateWithoutSessionsInput = {
   id?: string
   name: string
@@ -638,6 +871,8 @@ export type UserCreateWithoutSessionsInput = {
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  blockedUsers?: Prisma.UserCreateNestedManyWithoutBlockedByInput
+  blockedBy?: Prisma.UserCreateNestedManyWithoutBlockedUsersInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutUsersInput
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
@@ -657,6 +892,8 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  blockedUsers?: Prisma.UserUncheckedCreateNestedManyWithoutBlockedByInput
+  blockedBy?: Prisma.UserUncheckedCreateNestedManyWithoutBlockedUsersInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutUsersInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
@@ -692,6 +929,8 @@ export type UserUpdateWithoutSessionsInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  blockedUsers?: Prisma.UserUpdateManyWithoutBlockedByNestedInput
+  blockedBy?: Prisma.UserUpdateManyWithoutBlockedUsersNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutUsersNestedInput
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
@@ -711,6 +950,8 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  blockedUsers?: Prisma.UserUncheckedUpdateManyWithoutBlockedByNestedInput
+  blockedBy?: Prisma.UserUncheckedUpdateManyWithoutBlockedUsersNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutUsersNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
@@ -730,6 +971,8 @@ export type UserCreateWithoutAccountsInput = {
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  blockedUsers?: Prisma.UserCreateNestedManyWithoutBlockedByInput
+  blockedBy?: Prisma.UserCreateNestedManyWithoutBlockedUsersInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutUsersInput
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
@@ -749,6 +992,8 @@ export type UserUncheckedCreateWithoutAccountsInput = {
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  blockedUsers?: Prisma.UserUncheckedCreateNestedManyWithoutBlockedByInput
+  blockedBy?: Prisma.UserUncheckedCreateNestedManyWithoutBlockedUsersInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutUsersInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
@@ -784,6 +1029,8 @@ export type UserUpdateWithoutAccountsInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  blockedUsers?: Prisma.UserUpdateManyWithoutBlockedByNestedInput
+  blockedBy?: Prisma.UserUpdateManyWithoutBlockedUsersNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutUsersNestedInput
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
@@ -803,6 +1050,8 @@ export type UserUncheckedUpdateWithoutAccountsInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  blockedUsers?: Prisma.UserUncheckedUpdateManyWithoutBlockedByNestedInput
+  blockedBy?: Prisma.UserUncheckedUpdateManyWithoutBlockedUsersNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutUsersNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
@@ -822,6 +1071,8 @@ export type UserCreateWithoutConversationsInput = {
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  blockedUsers?: Prisma.UserCreateNestedManyWithoutBlockedByInput
+  blockedBy?: Prisma.UserCreateNestedManyWithoutBlockedUsersInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
@@ -841,6 +1092,8 @@ export type UserUncheckedCreateWithoutConversationsInput = {
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  blockedUsers?: Prisma.UserUncheckedCreateNestedManyWithoutBlockedByInput
+  blockedBy?: Prisma.UserUncheckedCreateNestedManyWithoutBlockedUsersInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
@@ -869,23 +1122,6 @@ export type UserUpdateManyWithWhereWithoutConversationsInput = {
   data: Prisma.XOR<Prisma.UserUpdateManyMutationInput, Prisma.UserUncheckedUpdateManyWithoutConversationsInput>
 }
 
-export type UserScalarWhereInput = {
-  AND?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
-  OR?: Prisma.UserScalarWhereInput[]
-  NOT?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
-  id?: Prisma.StringFilter<"User"> | string
-  name?: Prisma.StringFilter<"User"> | string
-  email?: Prisma.StringFilter<"User"> | string
-  role?: Prisma.EnumUserRoleFilter<"User"> | $Enums.UserRole
-  emailVerified?: Prisma.BoolFilter<"User"> | boolean
-  image?: Prisma.StringNullableFilter<"User"> | string | null
-  isOnline?: Prisma.BoolFilter<"User"> | boolean
-  lastSeen?: Prisma.DateTimeFilter<"User"> | Date | string
-  deletedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
-  createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
-  updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
-}
-
 export type UserCreateWithoutMessagesInput = {
   id?: string
   name: string
@@ -898,6 +1134,8 @@ export type UserCreateWithoutMessagesInput = {
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  blockedUsers?: Prisma.UserCreateNestedManyWithoutBlockedByInput
+  blockedBy?: Prisma.UserCreateNestedManyWithoutBlockedUsersInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutUsersInput
@@ -917,6 +1155,8 @@ export type UserUncheckedCreateWithoutMessagesInput = {
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  blockedUsers?: Prisma.UserUncheckedCreateNestedManyWithoutBlockedByInput
+  blockedBy?: Prisma.UserUncheckedCreateNestedManyWithoutBlockedUsersInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutUsersInput
@@ -952,6 +1192,8 @@ export type UserUpdateWithoutMessagesInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  blockedUsers?: Prisma.UserUpdateManyWithoutBlockedByNestedInput
+  blockedBy?: Prisma.UserUpdateManyWithoutBlockedUsersNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutUsersNestedInput
@@ -971,6 +1213,8 @@ export type UserUncheckedUpdateWithoutMessagesInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  blockedUsers?: Prisma.UserUncheckedUpdateManyWithoutBlockedByNestedInput
+  blockedBy?: Prisma.UserUncheckedUpdateManyWithoutBlockedUsersNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutUsersNestedInput
@@ -990,6 +1234,8 @@ export type UserCreateWithoutSentCallsInput = {
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  blockedUsers?: Prisma.UserCreateNestedManyWithoutBlockedByInput
+  blockedBy?: Prisma.UserCreateNestedManyWithoutBlockedUsersInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutUsersInput
@@ -1009,6 +1255,8 @@ export type UserUncheckedCreateWithoutSentCallsInput = {
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  blockedUsers?: Prisma.UserUncheckedCreateNestedManyWithoutBlockedByInput
+  blockedBy?: Prisma.UserUncheckedCreateNestedManyWithoutBlockedUsersInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutUsersInput
@@ -1033,6 +1281,8 @@ export type UserCreateWithoutReceivedCallsInput = {
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  blockedUsers?: Prisma.UserCreateNestedManyWithoutBlockedByInput
+  blockedBy?: Prisma.UserCreateNestedManyWithoutBlockedUsersInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutUsersInput
@@ -1052,6 +1302,8 @@ export type UserUncheckedCreateWithoutReceivedCallsInput = {
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  blockedUsers?: Prisma.UserUncheckedCreateNestedManyWithoutBlockedByInput
+  blockedBy?: Prisma.UserUncheckedCreateNestedManyWithoutBlockedUsersInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutUsersInput
@@ -1087,6 +1339,8 @@ export type UserUpdateWithoutSentCallsInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  blockedUsers?: Prisma.UserUpdateManyWithoutBlockedByNestedInput
+  blockedBy?: Prisma.UserUpdateManyWithoutBlockedUsersNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutUsersNestedInput
@@ -1106,6 +1360,8 @@ export type UserUncheckedUpdateWithoutSentCallsInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  blockedUsers?: Prisma.UserUncheckedUpdateManyWithoutBlockedByNestedInput
+  blockedBy?: Prisma.UserUncheckedUpdateManyWithoutBlockedUsersNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutUsersNestedInput
@@ -1136,6 +1392,8 @@ export type UserUpdateWithoutReceivedCallsInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  blockedUsers?: Prisma.UserUpdateManyWithoutBlockedByNestedInput
+  blockedBy?: Prisma.UserUpdateManyWithoutBlockedUsersNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutUsersNestedInput
@@ -1155,11 +1413,125 @@ export type UserUncheckedUpdateWithoutReceivedCallsInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  blockedUsers?: Prisma.UserUncheckedUpdateManyWithoutBlockedByNestedInput
+  blockedBy?: Prisma.UserUncheckedUpdateManyWithoutBlockedUsersNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutUsersNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
   sentCalls?: Prisma.CallLogUncheckedUpdateManyWithoutCallerNestedInput
+}
+
+export type UserUpdateWithoutBlockedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOnline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastSeen?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  blockedUsers?: Prisma.UserUpdateManyWithoutBlockedByNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  conversations?: Prisma.ConversationUpdateManyWithoutUsersNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  sentCalls?: Prisma.CallLogUpdateManyWithoutCallerNestedInput
+  receivedCalls?: Prisma.CallLogUpdateManyWithoutReceiverNestedInput
+}
+
+export type UserUncheckedUpdateWithoutBlockedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOnline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastSeen?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  blockedUsers?: Prisma.UserUncheckedUpdateManyWithoutBlockedByNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  conversations?: Prisma.ConversationUncheckedUpdateManyWithoutUsersNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  sentCalls?: Prisma.CallLogUncheckedUpdateManyWithoutCallerNestedInput
+  receivedCalls?: Prisma.CallLogUncheckedUpdateManyWithoutReceiverNestedInput
+}
+
+export type UserUncheckedUpdateManyWithoutBlockedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOnline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastSeen?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type UserUpdateWithoutBlockedUsersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOnline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastSeen?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  blockedBy?: Prisma.UserUpdateManyWithoutBlockedUsersNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  conversations?: Prisma.ConversationUpdateManyWithoutUsersNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  sentCalls?: Prisma.CallLogUpdateManyWithoutCallerNestedInput
+  receivedCalls?: Prisma.CallLogUpdateManyWithoutReceiverNestedInput
+}
+
+export type UserUncheckedUpdateWithoutBlockedUsersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOnline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastSeen?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  blockedBy?: Prisma.UserUncheckedUpdateManyWithoutBlockedUsersNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  conversations?: Prisma.ConversationUncheckedUpdateManyWithoutUsersNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  sentCalls?: Prisma.CallLogUncheckedUpdateManyWithoutCallerNestedInput
+  receivedCalls?: Prisma.CallLogUncheckedUpdateManyWithoutReceiverNestedInput
+}
+
+export type UserUncheckedUpdateManyWithoutBlockedUsersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOnline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastSeen?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type UserUpdateWithoutConversationsInput = {
@@ -1174,6 +1546,8 @@ export type UserUpdateWithoutConversationsInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  blockedUsers?: Prisma.UserUpdateManyWithoutBlockedByNestedInput
+  blockedBy?: Prisma.UserUpdateManyWithoutBlockedUsersNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
@@ -1193,6 +1567,8 @@ export type UserUncheckedUpdateWithoutConversationsInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  blockedUsers?: Prisma.UserUncheckedUpdateManyWithoutBlockedByNestedInput
+  blockedBy?: Prisma.UserUncheckedUpdateManyWithoutBlockedUsersNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
@@ -1220,6 +1596,8 @@ export type UserUncheckedUpdateManyWithoutConversationsInput = {
  */
 
 export type UserCountOutputType = {
+  blockedUsers: number
+  blockedBy: number
   sessions: number
   accounts: number
   conversations: number
@@ -1229,6 +1607,8 @@ export type UserCountOutputType = {
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  blockedUsers?: boolean | UserCountOutputTypeCountBlockedUsersArgs
+  blockedBy?: boolean | UserCountOutputTypeCountBlockedByArgs
   sessions?: boolean | UserCountOutputTypeCountSessionsArgs
   accounts?: boolean | UserCountOutputTypeCountAccountsArgs
   conversations?: boolean | UserCountOutputTypeCountConversationsArgs
@@ -1245,6 +1625,20 @@ export type UserCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensi
    * Select specific fields to fetch from the UserCountOutputType
    */
   select?: Prisma.UserCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountBlockedUsersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.UserWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountBlockedByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.UserWhereInput
 }
 
 /**
@@ -1302,6 +1696,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  blockedUsers?: boolean | Prisma.User$blockedUsersArgs<ExtArgs>
+  blockedBy?: boolean | Prisma.User$blockedByArgs<ExtArgs>
   sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
   accounts?: boolean | Prisma.User$accountsArgs<ExtArgs>
   conversations?: boolean | Prisma.User$conversationsArgs<ExtArgs>
@@ -1355,6 +1751,8 @@ export type UserSelectScalar = {
 
 export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "role" | "emailVerified" | "image" | "isOnline" | "lastSeen" | "deletedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  blockedUsers?: boolean | Prisma.User$blockedUsersArgs<ExtArgs>
+  blockedBy?: boolean | Prisma.User$blockedByArgs<ExtArgs>
   sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
   accounts?: boolean | Prisma.User$accountsArgs<ExtArgs>
   conversations?: boolean | Prisma.User$conversationsArgs<ExtArgs>
@@ -1369,6 +1767,8 @@ export type UserIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
 export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "User"
   objects: {
+    blockedUsers: Prisma.$UserPayload<ExtArgs>[]
+    blockedBy: Prisma.$UserPayload<ExtArgs>[]
     sessions: Prisma.$SessionPayload<ExtArgs>[]
     accounts: Prisma.$AccountPayload<ExtArgs>[]
     conversations: Prisma.$ConversationPayload<ExtArgs>[]
@@ -1782,6 +2182,8 @@ readonly fields: UserFieldRefs;
  */
 export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  blockedUsers<T extends Prisma.User$blockedUsersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$blockedUsersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  blockedBy<T extends Prisma.User$blockedByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$blockedByArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   sessions<T extends Prisma.User$sessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   accounts<T extends Prisma.User$accountsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$accountsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   conversations<T extends Prisma.User$conversationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$conversationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ConversationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -2218,6 +2620,54 @@ export type UserDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Limit how many Users to delete.
    */
   limit?: number
+}
+
+/**
+ * User.blockedUsers
+ */
+export type User$blockedUsersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
+  orderBy?: Prisma.UserOrderByWithRelationInput | Prisma.UserOrderByWithRelationInput[]
+  cursor?: Prisma.UserWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.UserScalarFieldEnum | Prisma.UserScalarFieldEnum[]
+}
+
+/**
+ * User.blockedBy
+ */
+export type User$blockedByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
+  orderBy?: Prisma.UserOrderByWithRelationInput | Prisma.UserOrderByWithRelationInput[]
+  cursor?: Prisma.UserWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.UserScalarFieldEnum | Prisma.UserScalarFieldEnum[]
 }
 
 /**

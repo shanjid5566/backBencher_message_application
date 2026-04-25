@@ -25,9 +25,13 @@ model User {
   email         String   @unique
   role          UserRole @default(USER)
   emailVerified Boolean  @default(false)
-  image         String? // Cloudinary URL
+  image         String?  // Cloudinary URL
   isOnline      Boolean  @default(false)
   lastSeen      DateTime @default(now())
+
+  // 🆕 Block System Relations (Self-Relation)
+  blockedUsers  User[]   @relation("UserBlocks")
+  blockedBy     User[]   @relation("UserBlocks")
 
   // Soft Delete Field
   deletedAt DateTime?
@@ -91,15 +95,33 @@ model Conversation {
   updatedAt DateTime @updatedAt
 }
 
+// 🆕 Enums for Messages
+enum MessageStatus {
+  SENT
+  DELIVERED
+  SEEN
+}
+
+enum MessageType {
+  TEXT
+  FILE
+  CALL_LOG
+}
+
 model Message {
-  id       String  @id @default(uuid())
+  id       String   @id @default(uuid())
   body     String?
-  fileUrl  String? // General field for images/videos/audio files
-  fileType String? // e.g., "IMAGE", "VIDEO", "FILE"
+  fileUrl  String?  // General field for images/videos/audio files
+  fileType String?  // e.g., "IMAGE", "VIDEO", "FILE"
 
-  isSeen Boolean @default(false)
+  // 🆕 Message Type & Status
+  type     MessageType   @default(TEXT)
+  status   MessageStatus @default(SENT)
 
-  // Soft Delete Field
+  // 🆕 Delete for Me Feature (Stores IDs of users who deleted it for themselves)
+  deletedFor String[] @default([])
+
+  // Soft Delete Field (Used for "Delete for Everyone")
   deletedAt DateTime?
 
   senderId String
@@ -128,9 +150,9 @@ model CallLog {
 
   startTime DateTime  @default(now())
   endTime   DateTime?
-  duration  Int? // Duration in seconds
+  duration  Int?      // Duration in seconds
 
-  recordingUrl String? // Cloudinary URL for the recorded call
+  recordingUrl String?    // Cloudinary URL for the recorded call
   status       CallStatus @default(MISSED)
 
   createdAt DateTime @default(now())

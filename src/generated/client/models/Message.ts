@@ -29,7 +29,8 @@ export type MessageMinAggregateOutputType = {
   body: string | null
   fileUrl: string | null
   fileType: string | null
-  isSeen: boolean | null
+  type: $Enums.MessageType | null
+  status: $Enums.MessageStatus | null
   deletedAt: Date | null
   senderId: string | null
   conversationId: string | null
@@ -41,7 +42,8 @@ export type MessageMaxAggregateOutputType = {
   body: string | null
   fileUrl: string | null
   fileType: string | null
-  isSeen: boolean | null
+  type: $Enums.MessageType | null
+  status: $Enums.MessageStatus | null
   deletedAt: Date | null
   senderId: string | null
   conversationId: string | null
@@ -53,7 +55,9 @@ export type MessageCountAggregateOutputType = {
   body: number
   fileUrl: number
   fileType: number
-  isSeen: number
+  type: number
+  status: number
+  deletedFor: number
   deletedAt: number
   senderId: number
   conversationId: number
@@ -67,7 +71,8 @@ export type MessageMinAggregateInputType = {
   body?: true
   fileUrl?: true
   fileType?: true
-  isSeen?: true
+  type?: true
+  status?: true
   deletedAt?: true
   senderId?: true
   conversationId?: true
@@ -79,7 +84,8 @@ export type MessageMaxAggregateInputType = {
   body?: true
   fileUrl?: true
   fileType?: true
-  isSeen?: true
+  type?: true
+  status?: true
   deletedAt?: true
   senderId?: true
   conversationId?: true
@@ -91,7 +97,9 @@ export type MessageCountAggregateInputType = {
   body?: true
   fileUrl?: true
   fileType?: true
-  isSeen?: true
+  type?: true
+  status?: true
+  deletedFor?: true
   deletedAt?: true
   senderId?: true
   conversationId?: true
@@ -176,7 +184,9 @@ export type MessageGroupByOutputType = {
   body: string | null
   fileUrl: string | null
   fileType: string | null
-  isSeen: boolean
+  type: $Enums.MessageType
+  status: $Enums.MessageStatus
+  deletedFor: string[]
   deletedAt: Date | null
   senderId: string
   conversationId: string
@@ -209,7 +219,9 @@ export type MessageWhereInput = {
   body?: Prisma.StringNullableFilter<"Message"> | string | null
   fileUrl?: Prisma.StringNullableFilter<"Message"> | string | null
   fileType?: Prisma.StringNullableFilter<"Message"> | string | null
-  isSeen?: Prisma.BoolFilter<"Message"> | boolean
+  type?: Prisma.EnumMessageTypeFilter<"Message"> | $Enums.MessageType
+  status?: Prisma.EnumMessageStatusFilter<"Message"> | $Enums.MessageStatus
+  deletedFor?: Prisma.StringNullableListFilter<"Message">
   deletedAt?: Prisma.DateTimeNullableFilter<"Message"> | Date | string | null
   senderId?: Prisma.StringFilter<"Message"> | string
   conversationId?: Prisma.StringFilter<"Message"> | string
@@ -223,7 +235,9 @@ export type MessageOrderByWithRelationInput = {
   body?: Prisma.SortOrderInput | Prisma.SortOrder
   fileUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   fileType?: Prisma.SortOrderInput | Prisma.SortOrder
-  isSeen?: Prisma.SortOrder
+  type?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  deletedFor?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   senderId?: Prisma.SortOrder
   conversationId?: Prisma.SortOrder
@@ -240,7 +254,9 @@ export type MessageWhereUniqueInput = Prisma.AtLeast<{
   body?: Prisma.StringNullableFilter<"Message"> | string | null
   fileUrl?: Prisma.StringNullableFilter<"Message"> | string | null
   fileType?: Prisma.StringNullableFilter<"Message"> | string | null
-  isSeen?: Prisma.BoolFilter<"Message"> | boolean
+  type?: Prisma.EnumMessageTypeFilter<"Message"> | $Enums.MessageType
+  status?: Prisma.EnumMessageStatusFilter<"Message"> | $Enums.MessageStatus
+  deletedFor?: Prisma.StringNullableListFilter<"Message">
   deletedAt?: Prisma.DateTimeNullableFilter<"Message"> | Date | string | null
   senderId?: Prisma.StringFilter<"Message"> | string
   conversationId?: Prisma.StringFilter<"Message"> | string
@@ -254,7 +270,9 @@ export type MessageOrderByWithAggregationInput = {
   body?: Prisma.SortOrderInput | Prisma.SortOrder
   fileUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   fileType?: Prisma.SortOrderInput | Prisma.SortOrder
-  isSeen?: Prisma.SortOrder
+  type?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  deletedFor?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   senderId?: Prisma.SortOrder
   conversationId?: Prisma.SortOrder
@@ -272,7 +290,9 @@ export type MessageScalarWhereWithAggregatesInput = {
   body?: Prisma.StringNullableWithAggregatesFilter<"Message"> | string | null
   fileUrl?: Prisma.StringNullableWithAggregatesFilter<"Message"> | string | null
   fileType?: Prisma.StringNullableWithAggregatesFilter<"Message"> | string | null
-  isSeen?: Prisma.BoolWithAggregatesFilter<"Message"> | boolean
+  type?: Prisma.EnumMessageTypeWithAggregatesFilter<"Message"> | $Enums.MessageType
+  status?: Prisma.EnumMessageStatusWithAggregatesFilter<"Message"> | $Enums.MessageStatus
+  deletedFor?: Prisma.StringNullableListFilter<"Message">
   deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Message"> | Date | string | null
   senderId?: Prisma.StringWithAggregatesFilter<"Message"> | string
   conversationId?: Prisma.StringWithAggregatesFilter<"Message"> | string
@@ -284,7 +304,9 @@ export type MessageCreateInput = {
   body?: string | null
   fileUrl?: string | null
   fileType?: string | null
-  isSeen?: boolean
+  type?: $Enums.MessageType
+  status?: $Enums.MessageStatus
+  deletedFor?: Prisma.MessageCreatedeletedForInput | string[]
   deletedAt?: Date | string | null
   createdAt?: Date | string
   sender: Prisma.UserCreateNestedOneWithoutMessagesInput
@@ -296,7 +318,9 @@ export type MessageUncheckedCreateInput = {
   body?: string | null
   fileUrl?: string | null
   fileType?: string | null
-  isSeen?: boolean
+  type?: $Enums.MessageType
+  status?: $Enums.MessageStatus
+  deletedFor?: Prisma.MessageCreatedeletedForInput | string[]
   deletedAt?: Date | string | null
   senderId: string
   conversationId: string
@@ -308,7 +332,9 @@ export type MessageUpdateInput = {
   body?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isSeen?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  type?: Prisma.EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
+  status?: Prisma.EnumMessageStatusFieldUpdateOperationsInput | $Enums.MessageStatus
+  deletedFor?: Prisma.MessageUpdatedeletedForInput | string[]
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sender?: Prisma.UserUpdateOneRequiredWithoutMessagesNestedInput
@@ -320,7 +346,9 @@ export type MessageUncheckedUpdateInput = {
   body?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isSeen?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  type?: Prisma.EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
+  status?: Prisma.EnumMessageStatusFieldUpdateOperationsInput | $Enums.MessageStatus
+  deletedFor?: Prisma.MessageUpdatedeletedForInput | string[]
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   senderId?: Prisma.StringFieldUpdateOperationsInput | string
   conversationId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -332,7 +360,9 @@ export type MessageCreateManyInput = {
   body?: string | null
   fileUrl?: string | null
   fileType?: string | null
-  isSeen?: boolean
+  type?: $Enums.MessageType
+  status?: $Enums.MessageStatus
+  deletedFor?: Prisma.MessageCreatedeletedForInput | string[]
   deletedAt?: Date | string | null
   senderId: string
   conversationId: string
@@ -344,7 +374,9 @@ export type MessageUpdateManyMutationInput = {
   body?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isSeen?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  type?: Prisma.EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
+  status?: Prisma.EnumMessageStatusFieldUpdateOperationsInput | $Enums.MessageStatus
+  deletedFor?: Prisma.MessageUpdatedeletedForInput | string[]
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -354,7 +386,9 @@ export type MessageUncheckedUpdateManyInput = {
   body?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isSeen?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  type?: Prisma.EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
+  status?: Prisma.EnumMessageStatusFieldUpdateOperationsInput | $Enums.MessageStatus
+  deletedFor?: Prisma.MessageUpdatedeletedForInput | string[]
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   senderId?: Prisma.StringFieldUpdateOperationsInput | string
   conversationId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -371,12 +405,22 @@ export type MessageOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
+export type StringNullableListFilter<$PrismaModel = never> = {
+  equals?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
+  has?: string | Prisma.StringFieldRefInput<$PrismaModel> | null
+  hasEvery?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
+  hasSome?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
+  isEmpty?: boolean
+}
+
 export type MessageCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   body?: Prisma.SortOrder
   fileUrl?: Prisma.SortOrder
   fileType?: Prisma.SortOrder
-  isSeen?: Prisma.SortOrder
+  type?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  deletedFor?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
   senderId?: Prisma.SortOrder
   conversationId?: Prisma.SortOrder
@@ -388,7 +432,8 @@ export type MessageMaxOrderByAggregateInput = {
   body?: Prisma.SortOrder
   fileUrl?: Prisma.SortOrder
   fileType?: Prisma.SortOrder
-  isSeen?: Prisma.SortOrder
+  type?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
   senderId?: Prisma.SortOrder
   conversationId?: Prisma.SortOrder
@@ -400,7 +445,8 @@ export type MessageMinOrderByAggregateInput = {
   body?: Prisma.SortOrder
   fileUrl?: Prisma.SortOrder
   fileType?: Prisma.SortOrder
-  isSeen?: Prisma.SortOrder
+  type?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
   senderId?: Prisma.SortOrder
   conversationId?: Prisma.SortOrder
@@ -491,12 +537,31 @@ export type MessageUncheckedUpdateManyWithoutConversationNestedInput = {
   deleteMany?: Prisma.MessageScalarWhereInput | Prisma.MessageScalarWhereInput[]
 }
 
+export type MessageCreatedeletedForInput = {
+  set: string[]
+}
+
+export type EnumMessageTypeFieldUpdateOperationsInput = {
+  set?: $Enums.MessageType
+}
+
+export type EnumMessageStatusFieldUpdateOperationsInput = {
+  set?: $Enums.MessageStatus
+}
+
+export type MessageUpdatedeletedForInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
 export type MessageCreateWithoutSenderInput = {
   id?: string
   body?: string | null
   fileUrl?: string | null
   fileType?: string | null
-  isSeen?: boolean
+  type?: $Enums.MessageType
+  status?: $Enums.MessageStatus
+  deletedFor?: Prisma.MessageCreatedeletedForInput | string[]
   deletedAt?: Date | string | null
   createdAt?: Date | string
   conversation: Prisma.ConversationCreateNestedOneWithoutMessagesInput
@@ -507,7 +572,9 @@ export type MessageUncheckedCreateWithoutSenderInput = {
   body?: string | null
   fileUrl?: string | null
   fileType?: string | null
-  isSeen?: boolean
+  type?: $Enums.MessageType
+  status?: $Enums.MessageStatus
+  deletedFor?: Prisma.MessageCreatedeletedForInput | string[]
   deletedAt?: Date | string | null
   conversationId: string
   createdAt?: Date | string
@@ -547,7 +614,9 @@ export type MessageScalarWhereInput = {
   body?: Prisma.StringNullableFilter<"Message"> | string | null
   fileUrl?: Prisma.StringNullableFilter<"Message"> | string | null
   fileType?: Prisma.StringNullableFilter<"Message"> | string | null
-  isSeen?: Prisma.BoolFilter<"Message"> | boolean
+  type?: Prisma.EnumMessageTypeFilter<"Message"> | $Enums.MessageType
+  status?: Prisma.EnumMessageStatusFilter<"Message"> | $Enums.MessageStatus
+  deletedFor?: Prisma.StringNullableListFilter<"Message">
   deletedAt?: Prisma.DateTimeNullableFilter<"Message"> | Date | string | null
   senderId?: Prisma.StringFilter<"Message"> | string
   conversationId?: Prisma.StringFilter<"Message"> | string
@@ -559,7 +628,9 @@ export type MessageCreateWithoutConversationInput = {
   body?: string | null
   fileUrl?: string | null
   fileType?: string | null
-  isSeen?: boolean
+  type?: $Enums.MessageType
+  status?: $Enums.MessageStatus
+  deletedFor?: Prisma.MessageCreatedeletedForInput | string[]
   deletedAt?: Date | string | null
   createdAt?: Date | string
   sender: Prisma.UserCreateNestedOneWithoutMessagesInput
@@ -570,7 +641,9 @@ export type MessageUncheckedCreateWithoutConversationInput = {
   body?: string | null
   fileUrl?: string | null
   fileType?: string | null
-  isSeen?: boolean
+  type?: $Enums.MessageType
+  status?: $Enums.MessageStatus
+  deletedFor?: Prisma.MessageCreatedeletedForInput | string[]
   deletedAt?: Date | string | null
   senderId: string
   createdAt?: Date | string
@@ -607,7 +680,9 @@ export type MessageCreateManySenderInput = {
   body?: string | null
   fileUrl?: string | null
   fileType?: string | null
-  isSeen?: boolean
+  type?: $Enums.MessageType
+  status?: $Enums.MessageStatus
+  deletedFor?: Prisma.MessageCreatedeletedForInput | string[]
   deletedAt?: Date | string | null
   conversationId: string
   createdAt?: Date | string
@@ -618,7 +693,9 @@ export type MessageUpdateWithoutSenderInput = {
   body?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isSeen?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  type?: Prisma.EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
+  status?: Prisma.EnumMessageStatusFieldUpdateOperationsInput | $Enums.MessageStatus
+  deletedFor?: Prisma.MessageUpdatedeletedForInput | string[]
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   conversation?: Prisma.ConversationUpdateOneRequiredWithoutMessagesNestedInput
@@ -629,7 +706,9 @@ export type MessageUncheckedUpdateWithoutSenderInput = {
   body?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isSeen?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  type?: Prisma.EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
+  status?: Prisma.EnumMessageStatusFieldUpdateOperationsInput | $Enums.MessageStatus
+  deletedFor?: Prisma.MessageUpdatedeletedForInput | string[]
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   conversationId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -640,7 +719,9 @@ export type MessageUncheckedUpdateManyWithoutSenderInput = {
   body?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isSeen?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  type?: Prisma.EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
+  status?: Prisma.EnumMessageStatusFieldUpdateOperationsInput | $Enums.MessageStatus
+  deletedFor?: Prisma.MessageUpdatedeletedForInput | string[]
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   conversationId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -651,7 +732,9 @@ export type MessageCreateManyConversationInput = {
   body?: string | null
   fileUrl?: string | null
   fileType?: string | null
-  isSeen?: boolean
+  type?: $Enums.MessageType
+  status?: $Enums.MessageStatus
+  deletedFor?: Prisma.MessageCreatedeletedForInput | string[]
   deletedAt?: Date | string | null
   senderId: string
   createdAt?: Date | string
@@ -662,7 +745,9 @@ export type MessageUpdateWithoutConversationInput = {
   body?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isSeen?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  type?: Prisma.EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
+  status?: Prisma.EnumMessageStatusFieldUpdateOperationsInput | $Enums.MessageStatus
+  deletedFor?: Prisma.MessageUpdatedeletedForInput | string[]
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sender?: Prisma.UserUpdateOneRequiredWithoutMessagesNestedInput
@@ -673,7 +758,9 @@ export type MessageUncheckedUpdateWithoutConversationInput = {
   body?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isSeen?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  type?: Prisma.EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
+  status?: Prisma.EnumMessageStatusFieldUpdateOperationsInput | $Enums.MessageStatus
+  deletedFor?: Prisma.MessageUpdatedeletedForInput | string[]
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   senderId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -684,7 +771,9 @@ export type MessageUncheckedUpdateManyWithoutConversationInput = {
   body?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isSeen?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  type?: Prisma.EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
+  status?: Prisma.EnumMessageStatusFieldUpdateOperationsInput | $Enums.MessageStatus
+  deletedFor?: Prisma.MessageUpdatedeletedForInput | string[]
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   senderId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -697,7 +786,9 @@ export type MessageSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   body?: boolean
   fileUrl?: boolean
   fileType?: boolean
-  isSeen?: boolean
+  type?: boolean
+  status?: boolean
+  deletedFor?: boolean
   deletedAt?: boolean
   senderId?: boolean
   conversationId?: boolean
@@ -711,7 +802,9 @@ export type MessageSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   body?: boolean
   fileUrl?: boolean
   fileType?: boolean
-  isSeen?: boolean
+  type?: boolean
+  status?: boolean
+  deletedFor?: boolean
   deletedAt?: boolean
   senderId?: boolean
   conversationId?: boolean
@@ -725,7 +818,9 @@ export type MessageSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   body?: boolean
   fileUrl?: boolean
   fileType?: boolean
-  isSeen?: boolean
+  type?: boolean
+  status?: boolean
+  deletedFor?: boolean
   deletedAt?: boolean
   senderId?: boolean
   conversationId?: boolean
@@ -739,14 +834,16 @@ export type MessageSelectScalar = {
   body?: boolean
   fileUrl?: boolean
   fileType?: boolean
-  isSeen?: boolean
+  type?: boolean
+  status?: boolean
+  deletedFor?: boolean
   deletedAt?: boolean
   senderId?: boolean
   conversationId?: boolean
   createdAt?: boolean
 }
 
-export type MessageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "body" | "fileUrl" | "fileType" | "isSeen" | "deletedAt" | "senderId" | "conversationId" | "createdAt", ExtArgs["result"]["message"]>
+export type MessageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "body" | "fileUrl" | "fileType" | "type" | "status" | "deletedFor" | "deletedAt" | "senderId" | "conversationId" | "createdAt", ExtArgs["result"]["message"]>
 export type MessageInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   sender?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   conversation?: boolean | Prisma.ConversationDefaultArgs<ExtArgs>
@@ -771,7 +868,9 @@ export type $MessagePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     body: string | null
     fileUrl: string | null
     fileType: string | null
-    isSeen: boolean
+    type: $Enums.MessageType
+    status: $Enums.MessageStatus
+    deletedFor: string[]
     deletedAt: Date | null
     senderId: string
     conversationId: string
@@ -1205,7 +1304,9 @@ export interface MessageFieldRefs {
   readonly body: Prisma.FieldRef<"Message", 'String'>
   readonly fileUrl: Prisma.FieldRef<"Message", 'String'>
   readonly fileType: Prisma.FieldRef<"Message", 'String'>
-  readonly isSeen: Prisma.FieldRef<"Message", 'Boolean'>
+  readonly type: Prisma.FieldRef<"Message", 'MessageType'>
+  readonly status: Prisma.FieldRef<"Message", 'MessageStatus'>
+  readonly deletedFor: Prisma.FieldRef<"Message", 'String[]'>
   readonly deletedAt: Prisma.FieldRef<"Message", 'DateTime'>
   readonly senderId: Prisma.FieldRef<"Message", 'String'>
   readonly conversationId: Prisma.FieldRef<"Message", 'String'>
