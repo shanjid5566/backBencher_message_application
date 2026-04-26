@@ -12,6 +12,6 @@ router.put('/change-password', protect, userController.changePassword);
 // 🔴 🆕 Block/Unblock Routes
 router.post('/block', protect, userController.blockUser);
 router.post('/unblock', protect, userController.unblockUser);
-router.get('/block-status/:targetUserId', protect, userController.checkBlockStatus); // 👈 নতুন
+router.get('/block-status/:targetUserId', protect, userController.checkBlockStatus);
 
 export const userRoutes = router;

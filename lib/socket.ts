@@ -531,22 +531,22 @@ export const initSocket = (server: HttpServer) => {
     // REAL-TIME MESSAGE STATUS (SEEN & DELETE)
     // ----------------------------------------------------
 
-    // ১. মেসেজ সিন (Seen) করার রিয়েল-টাইম ইভেন্ট
+    // 1. Real-time event for marking messages as seen
     socket.on("mark_as_seen", ({ conversationId, receiverId }) => {
       const receiverSocketId = getReceiverSocketId(receiverId);
       if (receiverSocketId) {
-        // অপরজনের কাছে সিগন্যাল পাঠাবে যে মেসেজ দেখা হয়ে গেছে (Blue Tick)
+        // Notify the other user that messages have been seen (Blue Tick)
         io.to(receiverSocketId).emit("messages_seen_update", {
           conversationId,
         });
       }
     });
 
-    // ২. সবার জন্য মেসেজ ডিলিট করার রিয়েল-টাইম ইভেন্ট
+    // 2. Real-time event for deleting message for everyone
     socket.on("message_deleted_for_everyone", ({ messageId, receiverId }) => {
       const receiverSocketId = getReceiverSocketId(receiverId);
       if (receiverSocketId) {
-        // অপরজনের স্ক্রিন থেকে মেসেজটা সাথে সাথে রিমুভ করে দেবে
+        // Remove the message instantly from the other user's screen
         io.to(receiverSocketId).emit("message_deleted_update", {
           messageId,
         });

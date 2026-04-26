@@ -76,6 +76,17 @@ model Account {
   updatedAt DateTime @updatedAt
 }
 
+model Verification {
+  id         String   @id @default(uuid())
+  identifier String   @unique
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([expiresAt])
+}
+
 // --- Messaging & Communication Models ---
 
 model Conversation {

@@ -1,15 +1,30 @@
 "use strict";
+// import { Router } from "express";
+// import { callController } from "../controllers/call.controller";
+// import { protect } from "../middleware/auth.middleware";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.callRoutes = void 0;
+// const router = Router();
+// router.post("/initiate", protect, callController.initiateCall);
+// router.post("/accept", protect, callController.acceptCall);
+// router.post("/reject", protect, callController.rejectCall);
+// router.post("/missed", protect, callController.missedCall);
+// router.post("/end", protect, callController.endCall);
+// router.get("/history", protect, callController.getCallHistory);
+// router.get("/missed", protect, callController.getMissedCalls);
+// export const callRoutes = router;
 const express_1 = require("express");
 const call_controller_1 = require("../controllers/call.controller");
 const auth_middleware_1 = require("../middleware/auth.middleware");
 const router = (0, express_1.Router)();
+// 🔴 🆕 Route for direct call save
+router.post("/", auth_middleware_1.protect, call_controller_1.callController.saveCallLog);
 router.post("/initiate", auth_middleware_1.protect, call_controller_1.callController.initiateCall);
 router.post("/accept", auth_middleware_1.protect, call_controller_1.callController.acceptCall);
 router.post("/reject", auth_middleware_1.protect, call_controller_1.callController.rejectCall);
 router.post("/missed", auth_middleware_1.protect, call_controller_1.callController.missedCall);
 router.post("/end", auth_middleware_1.protect, call_controller_1.callController.endCall);
+// 🔴 Route to fetch call history
 router.get("/history", auth_middleware_1.protect, call_controller_1.callController.getCallHistory);
 router.get("/missed", auth_middleware_1.protect, call_controller_1.callController.getMissedCalls);
 exports.callRoutes = router;

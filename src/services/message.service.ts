@@ -127,7 +127,7 @@ const deleteMessage = async (messageId: string, userId: string) => {
   });
 };
 
-// 🆕 Delete for Me (শুধু নিজের জন্য মেসেজ লুকানো)
+// 🆕 Delete for Me (hide message only for current user)
 const deleteForMe = async (messageId: string, userId: string) => {
   return await prisma.message.update({
     where: { id: messageId },
@@ -137,7 +137,7 @@ const deleteForMe = async (messageId: string, userId: string) => {
   });
 };
 
-// 🆕 Delete for Everyone (সবার জন্য মুছে ফেলা)
+// 🆕 Delete for Everyone (delete for all users)
 const deleteForEveryone = async (messageId: string, userId: string) => {
   return await prisma.message.delete({
     where: { 
@@ -171,7 +171,7 @@ const getMessages = async (
   const messages = await prisma.message.findMany({
     where: {
       conversationId: conversationId,
-      NOT: { deletedFor: { has: userId } }, // 👈 Delete for me করা মেসেজ বাদ যাবে
+      NOT: { deletedFor: { has: userId } }, // 👈 Exclude messages deleted for current user
     },
     include: {
       sender: {

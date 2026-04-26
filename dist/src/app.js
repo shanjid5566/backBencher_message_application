@@ -39,14 +39,17 @@ const authLimiter = (0, express_rate_limit_1.default)({
 // --- Better Auth Route ---
 // Apply the rate limiter ONLY to auth routes
 app.use('/api/auth/*path', authLimiter);
+// Backward-compatible alias for frontend typo/legacy route name.
+app.post('/api/auth/forget-password', (req, res) => {
+    return res.redirect(307, '/api/auth/request-password-reset');
+});
 app.all("/api/auth/*path", (0, node_1.toNodeHandler)(auth_1.auth));
 // ---  Application Routes ---
 app.use("/api/v1/messages", message_routes_1.messageRoutes);
 app.use("/api/v1/conversations", conversation_routes_1.conversationRoutes);
 app.use("/api/v1/users", user_routes_1.userRoutes);
 app.use("/api/v1/calls", call_routes_1.callRoutes);
-// app.use('/api/v1/auth', authRoutes); // Authentication routes (Better Auth) will be added here later
-// Serve static files from the uploads directory
+// 🔴 Serve static files from the uploads directory (Fixes the 404 error for images)
 app.use('/uploads', express_1.default.static(path_1.default.join(__dirname, '../uploads')));
 // Root Route (Health Check)
 app.get("/", (req, res) => {

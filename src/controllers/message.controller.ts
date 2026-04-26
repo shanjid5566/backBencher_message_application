@@ -150,7 +150,7 @@ const getSharedMedia = catchAsync(async (req: Request, res: Response) => {
     where: {
       conversationId: conversationId,
       fileUrl: { not: null },
-      NOT: { deletedFor: { has: user!.id } } // ডিলিট করা মেসেজ বাদ দেওয়া
+      NOT: { deletedFor: { has: user!.id } } // Exclude deleted messages
     },
     select: {
       id: true,

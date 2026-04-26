@@ -1,4 +1,8 @@
 "use strict";
+// import { Request, Response } from "express";
+// import catchAsync from "../utils/catchAsync";
+// import { callService } from "../services/call.service";
+// import AppError from "../utils/AppError";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -7,6 +11,7 @@ exports.callController = void 0;
 const catchAsync_1 = __importDefault(require("../utils/catchAsync"));
 const call_service_1 = require("../services/call.service");
 const AppError_1 = __importDefault(require("../utils/AppError"));
+const prisma_1 = require("../../lib/prisma"); // 👈 For direct save in database
 const initiateCall = (0, catchAsync_1.default)(async (req, res) => {
     const { receiverId, conversationId, callType } = req.body;
     const user = req.user;
@@ -48,10 +53,40 @@ const endCall = (0, catchAsync_1.default)(async (req, res) => {
     const callLog = await call_service_1.callService.endCall(callId, duration || 0, recordingUrl);
     res.status(200).json({ success: true, message: "Call ended", data: callLog });
 });
+// 🔴 🆕 1-Step Save Call Log (for direct save when call ends from frontend)
+const saveCallLog = (0, catchAsync_1.default)(async (req, res) => {
+    const callerId = req.user.id;
+    const { receiverId, conversationId, callType, status, duration } = req.body;
+    const callLog = await prisma_1.prisma.callLog.create({
+        data: {
+            callerId,
+            receiverId,
+            conversationId,
+            callType,
+            status,
+            duration,
+            endTime: new Date()
+        }
+    });
+    res.status(201).json({ success: true, data: callLog });
+});
+// 🔴 🆕 Get Call History (updated to send data with image and name)
 const getCallHistory = (0, catchAsync_1.default)(async (req, res) => {
     const user = req.user;
-    const limit = req.query.limit ? parseInt(req.query.limit) : 20;
-    const calls = await call_service_1.callService.getCallHistory(user.id, limit);
+    const calls = await prisma_1.prisma.callLog.findMany({
+        where: {
+            OR: [
+                { callerId: user.id },
+                { receiverId: user.id }
+            ]
+        },
+        include: {
+            caller: { select: { id: true, name: true, image: true } },
+            receiver: { select: { id: true, name: true, image: true } }
+        },
+        orderBy: { createdAt: 'desc' },
+        take: 50
+    });
     res.status(200).json({ success: true, message: "Call history fetched", data: calls });
 });
 const getMissedCalls = (0, catchAsync_1.default)(async (req, res) => {
@@ -59,4 +94,4 @@ const getMissedCalls = (0, catchAsync_1.default)(async (req, res) => {
     const missedCalls = await call_service_1.callService.getMissedCalls(user.id);
     res.status(200).json({ success: true, message: "Missed calls fetched", data: missedCalls });
 });
-exports.callController = { initiateCall, acceptCall, rejectCall, missedCall, endCall, getCallHistory, getMissedCalls };
+exports.callController = { initiateCall, acceptCall, rejectCall, missedCall, endCall, getCallHistory, getMissedCalls, saveCallLog };

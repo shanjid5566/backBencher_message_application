@@ -42,6 +42,12 @@ const authLimiter = rateLimit({
 // --- Better Auth Route ---
 // Apply the rate limiter ONLY to auth routes
 app.use('/api/auth/*path', authLimiter);
+
+// Backward-compatible alias for frontend typo/legacy route name.
+app.post('/api/auth/forget-password', (req: Request, res: Response) => {
+  return res.redirect(307, '/api/auth/request-password-reset');
+});
+
 app.all("/api/auth/*path", toNodeHandler(auth));
 
 // ---  Application Routes ---

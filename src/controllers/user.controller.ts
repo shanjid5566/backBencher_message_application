@@ -3,7 +3,7 @@ import catchAsync from '../utils/catchAsync';
 import { prisma } from '../../lib/prisma';
 import AppError from '../utils/AppError';
 import { hashPassword, verifyPassword } from '@better-auth/utils/password';
-import { getIo, getReceiverSocketId } from '../../lib/socket'; // 👈 সকেটের ইমপোর্ট যোগ করা হলো
+import { getIo, getReceiverSocketId } from '../../lib/socket'; // 👈 Added socket imports
 
 type AuthenticatedRequest = Request & {
   user?: { id: string };
@@ -76,7 +76,7 @@ const changePassword = catchAsync(async (req: Request, res: Response) => {
   res.status(200).json({ success: true, message: 'Password changed successfully' });
 });
 
-// 🔴 🆕 Check Block Status API (ফ্রন্টএন্ডকে জানানোর জন্য যে ব্লক আছে কি না)
+// 🔴 🆕 Check Block Status API (to inform the frontend whether blocking exists)
 const checkBlockStatus = catchAsync(async (req: Request, res: Response) => {
   const userId = (req as AuthenticatedRequest).user?.id;
   const { targetUserId } = req.params;
@@ -92,14 +92,14 @@ const checkBlockStatus = catchAsync(async (req: Request, res: Response) => {
   res.status(200).json({ success: true, data: { iBlockedThem, theyBlockedMe } });
 });
 
-// 🔴 🆕 Block User API (সাথে সকেট ইভেন্ট)
+// 🔴 🆕 Block User API (with socket event)
 const blockUser = catchAsync(async (req: Request, res: Response) => {
   const userId = (req as AuthenticatedRequest).user?.id;
   const { targetUserId } = req.body;
 
   if (!userId || !targetUserId) throw new AppError(400, 'Missing required IDs');
 
-  // Prisma Many-to-Many self-relation অনুযায়ী connect করা
+  // Connect based on Prisma Many-to-Many self-relation
   await prisma.user.update({
     where: { id: userId },
     data: {
@@ -109,7 +109,7 @@ const blockUser = catchAsync(async (req: Request, res: Response) => {
     }
   });
 
-  // রিয়েল-টাইমে অপরজনকে জানানো
+  // Notify the other user in real-time
   const targetSocketId = getReceiverSocketId(targetUserId);
   if (targetSocketId) {
     getIo().to(targetSocketId).emit("block_update", { blockerId: userId, action: "block" });
@@ -118,14 +118,14 @@ const blockUser = catchAsync(async (req: Request, res: Response) => {
   res.status(200).json({ success: true, message: 'User blocked successfully' });
 });
 
-// 🔴 🆕 Unblock User API (সাথে সকেট ইভেন্ট)
+// 🔴 🆕 Unblock User API (with socket event)
 const unblockUser = catchAsync(async (req: Request, res: Response) => {
   const userId = (req as AuthenticatedRequest).user?.id;
   const { targetUserId } = req.body;
 
   if (!userId || !targetUserId) throw new AppError(400, 'Missing required IDs');
 
-  // Prisma Many-to-Many self-relation অনুযায়ী disconnect করা
+  // Disconnect based on Prisma Many-to-Many self-relation
   await prisma.user.update({
     where: { id: userId },
     data: {
@@ -135,7 +135,7 @@ const unblockUser = catchAsync(async (req: Request, res: Response) => {
     }
   });
 
-  // রিয়েল-টাইমে অপরজনকে জানানো
+  // Notify the other user in real-time
   const targetSocketId = getReceiverSocketId(targetUserId);
   if (targetSocketId) {
     getIo().to(targetSocketId).emit("block_update", { blockerId: userId, action: "unblock" });

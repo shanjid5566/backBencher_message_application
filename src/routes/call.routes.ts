@@ -21,7 +21,7 @@ import { protect } from "../middleware/auth.middleware";
 
 const router = Router();
 
-// 🔴 🆕 ডাইরেক্ট কল সেভ করার রাউট
+// 🔴 🆕 Route for direct call save
 router.post("/", protect, callController.saveCallLog);
 
 router.post("/initiate", protect, callController.initiateCall);
@@ -30,7 +30,7 @@ router.post("/reject", protect, callController.rejectCall);
 router.post("/missed", protect, callController.missedCall);
 router.post("/end", protect, callController.endCall);
 
-// 🔴 কল হিস্ট্রি আনার রাউট
+// 🔴 Route to fetch call history
 router.get("/history", protect, callController.getCallHistory);
 router.get("/missed", protect, callController.getMissedCalls);
 

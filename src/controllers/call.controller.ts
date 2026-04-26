@@ -73,7 +73,7 @@ import { Request, Response } from "express";
 import catchAsync from "../utils/catchAsync";
 import { callService } from "../services/call.service";
 import AppError from "../utils/AppError";
-import { prisma } from '../../lib/prisma'; // 👈 ডাটাবেসে ডাইরেক্ট সেভ করার জন্য
+import { prisma } from '../../lib/prisma'; // 👈 For direct save in database
 
 type AuthenticatedRequest = Request & { user?: { id: string } };
 
@@ -122,7 +122,7 @@ const endCall = catchAsync(async (req: Request, res: Response) => {
   res.status(200).json({ success: true, message: "Call ended", data: callLog });
 });
 
-// 🔴 🆕 1-Step Save Call Log (ফ্রন্টএন্ড থেকে কল শেষ হলে ডাইরেক্ট সেভ করার জন্য)
+// 🔴 🆕 1-Step Save Call Log (for direct save when call ends from frontend)
 const saveCallLog = catchAsync(async (req: Request, res: Response) => {
   const callerId = (req as AuthenticatedRequest).user!.id;
   const { receiverId, conversationId, callType, status, duration } = req.body;
@@ -142,7 +142,7 @@ const saveCallLog = catchAsync(async (req: Request, res: Response) => {
   res.status(201).json({ success: true, data: callLog });
 });
 
-// 🔴 🆕 Get Call History (ছবি ও নাম সহ ডেটা পাঠানোর জন্য আপডেট করা হয়েছে)
+// 🔴 🆕 Get Call History (updated to send data with image and name)
 const getCallHistory = catchAsync(async (req: Request, res: Response) => {
   const user = (req as AuthenticatedRequest).user;
   
