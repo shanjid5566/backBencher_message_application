@@ -1,0 +1,15 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.callRoutes = void 0;
+const express_1 = require("express");
+const call_controller_1 = require("../controllers/call.controller");
+const auth_middleware_1 = require("../middleware/auth.middleware");
+const router = (0, express_1.Router)();
+router.post("/initiate", auth_middleware_1.protect, call_controller_1.callController.initiateCall);
+router.post("/accept", auth_middleware_1.protect, call_controller_1.callController.acceptCall);
+router.post("/reject", auth_middleware_1.protect, call_controller_1.callController.rejectCall);
+router.post("/missed", auth_middleware_1.protect, call_controller_1.callController.missedCall);
+router.post("/end", auth_middleware_1.protect, call_controller_1.callController.endCall);
+router.get("/history", auth_middleware_1.protect, call_controller_1.callController.getCallHistory);
+router.get("/missed", auth_middleware_1.protect, call_controller_1.callController.getMissedCalls);
+exports.callRoutes = router;

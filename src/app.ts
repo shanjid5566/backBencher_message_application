@@ -3,7 +3,6 @@ import cors from "cors";
 import path from 'path';
 import { messageRoutes } from "./routes/message.routes";
 
-
 import { auth } from "../lib/auth";
 import { toNodeHandler } from "better-auth/node";
 import { config } from "./config";
@@ -28,7 +27,6 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-
 // --- Security Middleware (Rate Limiting) ---
 // Stricter limit for authentication actions (login, signup, etc.)
 const authLimiter = rateLimit({
@@ -40,6 +38,7 @@ const authLimiter = rateLimit({
     message: 'Too many authentication attempts. Please try again after 15 minutes.' 
   }
 });
+
 // --- Better Auth Route ---
 // Apply the rate limiter ONLY to auth routes
 app.use('/api/auth/*path', authLimiter);
@@ -50,8 +49,8 @@ app.use("/api/v1/messages", messageRoutes);
 app.use("/api/v1/conversations", conversationRoutes);
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/calls", callRoutes);
-// app.use('/api/v1/auth', authRoutes); // Authentication routes (Better Auth) will be added here later
-// Serve static files from the uploads directory
+
+// 🔴 Serve static files from the uploads directory (Fixes the 404 error for images)
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // Root Route (Health Check)
