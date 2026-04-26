@@ -3,6 +3,7 @@ import catchAsync from '../utils/catchAsync';
 import { prisma } from '../../lib/prisma';
 import AppError from '../utils/AppError';
 import { hashPassword, verifyPassword } from '@better-auth/utils/password';
+import { getIo, getReceiverSocketId } from '../../lib/socket'; // 👈 সকেটের ইমপোর্ট যোগ করা হলো
 
 type AuthenticatedRequest = Request & {
   user?: { id: string };
@@ -50,7 +51,6 @@ const updateProfile = catchAsync(async (req: Request, res: Response) => {
   res.status(200).json({ success: true, message: 'Profile updated successfully', data: updatedUser });
 });
 
-// 🆕 Change Password Logic
 const changePassword = catchAsync(async (req: Request, res: Response) => {
   const userId = (req as AuthenticatedRequest).user?.id;
   const { currentPassword, newPassword } = req.body;
@@ -58,18 +58,15 @@ const changePassword = catchAsync(async (req: Request, res: Response) => {
   if (!userId) throw new AppError(401, 'Unauthorized');
   if (!currentPassword || !newPassword) throw new AppError(400, 'Please provide both current and new passwords');
 
-  // Account টেবিল থেকে ইউজারের পাসওয়ার্ড আনা (আপনার স্কিমা অনুযায়ী)
   const account = await prisma.account.findFirst({ where: { userId } });
   
   if (!account || !account.password) {
     throw new AppError(400, 'No password set for this account (maybe you logged in with Google/GitHub)');
   }
 
-  // Better Auth hash format অনুযায়ী verify করতে হবে
   const isMatch = await verifyPassword(account.password, currentPassword);
   if (!isMatch) throw new AppError(400, 'Incorrect current password');
 
-  // Better Auth compatible hash তৈরি করে সেভ করা
   const hashedNewPassword = await hashPassword(newPassword);
   await prisma.account.update({
     where: { id: account.id },
@@ -79,4 +76,72 @@ const changePassword = catchAsync(async (req: Request, res: Response) => {
   res.status(200).json({ success: true, message: 'Password changed successfully' });
 });
 
-export const userController = { searchUsers, updateProfile, changePassword };
+// 🔴 🆕 Check Block Status API (ফ্রন্টএন্ডকে জানানোর জন্য যে ব্লক আছে কি না)
+const checkBlockStatus = catchAsync(async (req: Request, res: Response) => {
+  const userId = (req as AuthenticatedRequest).user?.id;
+  const { targetUserId } = req.params;
+
+  const currentUser = await prisma.user.findUnique({
+    where: { id: userId },
+    include: { blockedUsers: true, blockedBy: true }
+  });
+
+  const iBlockedThem = currentUser?.blockedUsers.some(u => u.id === targetUserId) || false;
+  const theyBlockedMe = currentUser?.blockedBy.some(u => u.id === targetUserId) || false;
+
+  res.status(200).json({ success: true, data: { iBlockedThem, theyBlockedMe } });
+});
+
+// 🔴 🆕 Block User API (সাথে সকেট ইভেন্ট)
+const blockUser = catchAsync(async (req: Request, res: Response) => {
+  const userId = (req as AuthenticatedRequest).user?.id;
+  const { targetUserId } = req.body;
+
+  if (!userId || !targetUserId) throw new AppError(400, 'Missing required IDs');
+
+  // Prisma Many-to-Many self-relation অনুযায়ী connect করা
+  await prisma.user.update({
+    where: { id: userId },
+    data: {
+      blockedUsers: {
+        connect: { id: targetUserId }
+      }
+    }
+  });
+
+  // রিয়েল-টাইমে অপরজনকে জানানো
+  const targetSocketId = getReceiverSocketId(targetUserId);
+  if (targetSocketId) {
+    getIo().to(targetSocketId).emit("block_update", { blockerId: userId, action: "block" });
+  }
+
+  res.status(200).json({ success: true, message: 'User blocked successfully' });
+});
+
+// 🔴 🆕 Unblock User API (সাথে সকেট ইভেন্ট)
+const unblockUser = catchAsync(async (req: Request, res: Response) => {
+  const userId = (req as AuthenticatedRequest).user?.id;
+  const { targetUserId } = req.body;
+
+  if (!userId || !targetUserId) throw new AppError(400, 'Missing required IDs');
+
+  // Prisma Many-to-Many self-relation অনুযায়ী disconnect করা
+  await prisma.user.update({
+    where: { id: userId },
+    data: {
+      blockedUsers: {
+        disconnect: { id: targetUserId }
+      }
+    }
+  });
+
+  // রিয়েল-টাইমে অপরজনকে জানানো
+  const targetSocketId = getReceiverSocketId(targetUserId);
+  if (targetSocketId) {
+    getIo().to(targetSocketId).emit("block_update", { blockerId: userId, action: "unblock" });
+  }
+
+  res.status(200).json({ success: true, message: 'User unblocked successfully' });
+});
+
+export const userController = { searchUsers, updateProfile, changePassword, blockUser, unblockUser, checkBlockStatus };

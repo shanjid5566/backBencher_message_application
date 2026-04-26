@@ -7,8 +7,11 @@ const router = Router();
 
 router.get('/search', protect, userController.searchUsers);
 router.put('/profile', protect, upload.single('image'), userController.updateProfile);
-
-// 🆕 Change Password Route
 router.put('/change-password', protect, userController.changePassword);
+
+// 🔴 🆕 Block/Unblock Routes
+router.post('/block', protect, userController.blockUser);
+router.post('/unblock', protect, userController.unblockUser);
+router.get('/block-status/:targetUserId', protect, userController.checkBlockStatus); // 👈 নতুন
 
 export const userRoutes = router;
