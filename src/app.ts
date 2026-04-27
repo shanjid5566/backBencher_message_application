@@ -48,6 +48,63 @@ app.post('/api/auth/forget-password', (req: Request, res: Response) => {
   return res.redirect(307, '/api/auth/request-password-reset');
 });
 
+const normalizeVerifyCallbackURL = (callbackURL?: string) => {
+  if (!callbackURL || callbackURL === '/' || callbackURL === '%2F') {
+    return `${config.clientUrl}/login`;
+  }
+
+  if (callbackURL.startsWith('/')) {
+    if (callbackURL === '/') {
+      return `${config.clientUrl}/login`;
+    }
+    return `${config.clientUrl}${callbackURL}`;
+  }
+
+  try {
+    const parsed = new URL(callbackURL);
+    const client = new URL(config.clientUrl);
+
+    // If callback points to frontend root, normalize to /login.
+    if (
+      parsed.origin === client.origin &&
+      (parsed.pathname === '/' || parsed.pathname === '')
+    ) {
+      parsed.pathname = '/login';
+      return parsed.toString();
+    }
+  } catch {
+    // Keep original value if URL parsing fails.
+  }
+
+  return callbackURL;
+};
+
+app.get('/verify-email', (req: Request, res: Response) => {
+  const query = req.query as { token?: string; callbackURL?: string };
+  const token = query.token;
+
+  if (!token) {
+    return res.redirect(307, '/api/auth/verify-email');
+  }
+
+  const callbackURL = normalizeVerifyCallbackURL(query.callbackURL);
+  const target = `/api/auth/verify-email?token=${encodeURIComponent(token)}&callbackURL=${encodeURIComponent(callbackURL)}`;
+  return res.redirect(307, target);
+});
+
+app.get('/api/auth/verify-email', (req: Request, res: Response, next: NextFunction) => {
+  const query = req.query as { token?: string; callbackURL?: string };
+  const callbackURL = normalizeVerifyCallbackURL(query.callbackURL);
+
+  if (callbackURL !== query.callbackURL) {
+    const tokenPart = query.token ? `token=${encodeURIComponent(query.token)}&` : '';
+    const target = `/api/auth/verify-email?${tokenPart}callbackURL=${encodeURIComponent(callbackURL)}`;
+    return res.redirect(307, target);
+  }
+
+  next();
+});
+
 const buildResetPasswordRedirect = (token?: string, callbackURL?: string) => {
   const fallbackCallbackURL = `${config.clientUrl}/reset-password`;
   const targetCallbackURL = callbackURL || fallbackCallbackURL;

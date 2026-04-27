@@ -104,6 +104,7 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: true,
+    autoSignIn: false,
     minPasswordLength: 8,
     maxPasswordLength: 100,
     
@@ -140,7 +141,14 @@ export const auth = betterAuth({
   emailVerification: {
     sendOnSignUp: true,
     sendVerificationEmail: async ({ user, url }) => {
-      await sendVerificationEmailTemplate(user.email, user.name, url);
+      const verificationUrl = new URL(url);
+      verificationUrl.searchParams.set("callbackURL", `${config.clientUrl}/login`);
+
+      await sendVerificationEmailTemplate(
+        user.email,
+        user.name,
+        verificationUrl.toString(),
+      );
     },
   },
   session: {
