@@ -48,6 +48,106 @@ app.post('/api/auth/forget-password', (req: Request, res: Response) => {
   return res.redirect(307, '/api/auth/request-password-reset');
 });
 
+const buildResetPasswordRedirect = (token?: string, callbackURL?: string) => {
+  const fallbackCallbackURL = `${config.clientUrl}/reset-password`;
+  const targetCallbackURL = callbackURL || fallbackCallbackURL;
+
+  if (!token) {
+    return `${targetCallbackURL}`;
+  }
+
+  // Include token in callback URL as well for broader frontend compatibility.
+  let callbackWithToken = targetCallbackURL;
+  try {
+    const url = new URL(targetCallbackURL);
+    if (!url.searchParams.get('token')) {
+      url.searchParams.set('token', token);
+    }
+    callbackWithToken = url.toString();
+  } catch {
+    callbackWithToken = `${fallbackCallbackURL}?token=${encodeURIComponent(token)}`;
+  }
+
+  return `/api/auth/reset-password/${encodeURIComponent(token)}?callbackURL=${encodeURIComponent(callbackWithToken)}`;
+};
+
+const parseResetTokenCookie = (cookieHeader?: string) => {
+  if (!cookieHeader) return undefined;
+
+  const match = cookieHeader
+    .split(';')
+    .map((part) => part.trim())
+    .find((part) => part.startsWith('bb_reset_token='));
+
+  if (!match) return undefined;
+  return decodeURIComponent(match.slice('bb_reset_token='.length));
+};
+
+app.get('/reset-password', (req: Request, res: Response) => {
+  const query = req.query as { token?: string; callbackURL?: string };
+  const token = query.token;
+  const callbackURL = query.callbackURL;
+
+  if (token) {
+    res.cookie('bb_reset_token', encodeURIComponent(token), {
+      httpOnly: false,
+      sameSite: 'lax',
+      maxAge: 15 * 60 * 1000,
+      path: '/',
+    });
+  }
+
+  return res.redirect(307, buildResetPasswordRedirect(token, callbackURL));
+});
+
+app.get('/reset-password/:token', (req: Request, res: Response) => {
+  const query = req.query as { callbackURL?: string };
+  const callbackURL = query.callbackURL;
+  const token = typeof req.params.token === 'string' ? req.params.token : undefined;
+
+  if (token) {
+    res.cookie('bb_reset_token', encodeURIComponent(token), {
+      httpOnly: false,
+      sameSite: 'lax',
+      maxAge: 15 * 60 * 1000,
+      path: '/',
+    });
+  }
+
+  return res.redirect(307, buildResetPasswordRedirect(token, callbackURL));
+});
+
+app.post('/api/auth/reset-password', (req: Request, res: Response, next: NextFunction) => {
+  const query = req.query as { token?: string };
+  const body = req.body as {
+    token?: string;
+    resetToken?: string;
+    verificationToken?: string;
+    code?: string;
+    newPassword?: string;
+    password?: string;
+  };
+  const cookieToken = parseResetTokenCookie(req.headers.cookie);
+
+  if (!body.newPassword && body.password) {
+    body.newPassword = body.password;
+  }
+
+  const finalToken =
+    query.token ||
+    cookieToken ||
+    body.token ||
+    body.resetToken ||
+    body.verificationToken ||
+    body.code;
+
+  if (finalToken) {
+    body.token = finalToken;
+  }
+
+  next();
+});
+
 app.all("/api/auth/*path", toNodeHandler(auth));
 
 // ---  Application Routes ---
