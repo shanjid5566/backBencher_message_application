@@ -84,19 +84,22 @@ const sendFileMessage = (0, catchAsync_1.default)(async (req, res) => {
 const getMessages = (0, catchAsync_1.default)(async (req, res) => {
     const { conversationId } = req.query;
     const user = req.user;
+    if (!conversationId || typeof conversationId !== 'string') {
+        throw new AppError_1.default(400, 'Conversation ID is required');
+    }
     const page = req.query.page ? parseInt(req.query.page) : 1;
     const limit = req.query.limit ? parseInt(req.query.limit) : 50;
     const result = await message_service_1.messageService.getMessages(conversationId, user.id, page, limit);
     res.status(200).json({ success: true, message: 'Messages fetched successfully', data: result });
 });
 const deleteForMe = (0, catchAsync_1.default)(async (req, res) => {
-    const { id } = req.params;
+    const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
     const user = req.user;
     await message_service_1.messageService.deleteForMe(id, user.id);
     res.status(200).json({ success: true, message: 'Message deleted for you' });
 });
 const deleteForEveryone = (0, catchAsync_1.default)(async (req, res) => {
-    const { id } = req.params;
+    const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
     const user = req.user;
     const result = await message_service_1.messageService.deleteForEveryone(id, user.id);
     res.status(200).json({ success: true, message: 'Message deleted for everyone', data: result });
@@ -115,7 +118,7 @@ const getSharedMedia = (0, catchAsync_1.default)(async (req, res) => {
         throw new AppError_1.default(400, 'Conversation ID is required');
     const mediaMessages = await prisma_1.prisma.message.findMany({
         where: {
-            conversationId: conversationId,
+            conversationId: Array.isArray(conversationId) ? conversationId[0] : conversationId,
             fileUrl: { not: null },
             NOT: { deletedFor: { has: user.id } } // Exclude deleted messages
         },

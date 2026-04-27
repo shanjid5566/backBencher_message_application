@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import catchAsync from '../utils/catchAsync';
 import { prisma } from '../../lib/prisma';
 import AppError from '../utils/AppError';
-import { hashPassword, verifyPassword } from '@better-auth/utils/password';
+import { hashPassword, verifyPassword } from '@better-auth/utils/dist/password';
 import { getIo, getReceiverSocketId } from '../../lib/socket'; // 👈 Added socket imports
 
 type AuthenticatedRequest = Request & {

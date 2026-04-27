@@ -93,6 +93,7 @@ exports.auth = (0, better_auth_1.betterAuth)({
     emailAndPassword: {
         enabled: true,
         requireEmailVerification: true,
+        autoSignIn: false,
         minPasswordLength: 8,
         maxPasswordLength: 100,
         // Added the password reset configuration
@@ -126,7 +127,9 @@ exports.auth = (0, better_auth_1.betterAuth)({
     emailVerification: {
         sendOnSignUp: true,
         sendVerificationEmail: async ({ user, url }) => {
-            await (0, email_1.sendVerificationEmailTemplate)(user.email, user.name, url);
+            const verificationUrl = new URL(url);
+            verificationUrl.searchParams.set("callbackURL", `${config_1.config.clientUrl}/login`);
+            await (0, email_1.sendVerificationEmailTemplate)(user.email, user.name, verificationUrl.toString());
         },
     },
     session: {

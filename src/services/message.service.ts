@@ -89,7 +89,7 @@
 
 
 import { prisma } from "../../lib/prisma";
-import { MessageType } from "@prisma/client";
+import { $Enums } from "../generated/client/client";
 
 const sendMessage = async (payload: {
   body?: string;
@@ -97,7 +97,7 @@ const sendMessage = async (payload: {
   fileType?: string;
   senderId: string;
   conversationId: string;
-  type?: MessageType;
+  type?: $Enums.MessageType;
 }) => {
   return await prisma.message.create({
     data: {

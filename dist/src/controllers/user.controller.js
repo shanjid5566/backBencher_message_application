@@ -7,7 +7,7 @@ exports.userController = void 0;
 const catchAsync_1 = __importDefault(require("../utils/catchAsync"));
 const prisma_1 = require("../../lib/prisma");
 const AppError_1 = __importDefault(require("../utils/AppError"));
-const password_1 = require("@better-auth/utils/password");
+const password_1 = require("@better-auth/utils/dist/password");
 const socket_1 = require("../../lib/socket"); // 👈 Added socket imports
 const searchUsers = (0, catchAsync_1.default)(async (req, res) => {
     const { q } = req.query;

@@ -102,11 +102,15 @@ const getMessages = catchAsync(async (req: Request, res: Response) => {
   const { conversationId } = req.query;
   const user = (req as AuthenticatedRequest).user;
 
+  if (!conversationId || typeof conversationId !== 'string') {
+    throw new AppError(400, 'Conversation ID is required');
+  }
+
   const page = req.query.page ? parseInt(req.query.page as string) : 1;
   const limit = req.query.limit ? parseInt(req.query.limit as string) : 50;
 
   const result = await messageService.getMessages(
-    conversationId as string,
+    conversationId,
     user!.id,
     page,
     limit
@@ -116,7 +120,7 @@ const getMessages = catchAsync(async (req: Request, res: Response) => {
 });
 
 const deleteForMe = catchAsync(async (req: Request, res: Response) => {
-  const { id } = req.params;
+  const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
   const user = (req as AuthenticatedRequest).user;
   
   await messageService.deleteForMe(id, user!.id);
@@ -124,7 +128,7 @@ const deleteForMe = catchAsync(async (req: Request, res: Response) => {
 });
 
 const deleteForEveryone = catchAsync(async (req: Request, res: Response) => {
-  const { id } = req.params;
+  const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
   const user = (req as AuthenticatedRequest).user;
   
   const result = await messageService.deleteForEveryone(id, user!.id);
@@ -148,7 +152,7 @@ const getSharedMedia = catchAsync(async (req: Request, res: Response) => {
 
   const mediaMessages = await prisma.message.findMany({
     where: {
-      conversationId: conversationId,
+      conversationId: Array.isArray(conversationId) ? conversationId[0] : conversationId,
       fileUrl: { not: null },
       NOT: { deletedFor: { has: user!.id } } // Exclude deleted messages
     },
