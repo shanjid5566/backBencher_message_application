@@ -101,11 +101,11 @@ export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
-  // For cross-domain: return session in response body, not just cookies
+  // Cookie configuration for cross-domain
   cookie: {
-    httpOnly: false, // Allow frontend JavaScript to read/manage tokens
-    secure: true, // HTTPS only
-    sameSite: 'none', // Allow cross-domain
+    httpOnly: false, // Allow frontend JavaScript to read cookies
+    secure: config.auth.url.startsWith('https'), // HTTPS in production only
+    sameSite: config.auth.url.startsWith('https') ? 'none' : 'lax', // none for cross-domain in prod
     maxAge: 60 * 60 * 24 * 7, // 7 days
   },
   emailAndPassword: {
