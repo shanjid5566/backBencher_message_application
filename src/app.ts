@@ -205,9 +205,7 @@ app.post('/api/auth/reset-password', (req: Request, res: Response, next: NextFun
   next();
 });
 
-app.all("/api/auth/*path", toNodeHandler(auth));
-
-// Helper endpoint to get token from cookies (after sign-in)
+// Helper endpoint to get token from cookies (after sign-in) - BEFORE app.all()
 app.get("/api/auth/get-token", async (req: Request, res: Response) => {
   try {
     const cookieHeader = req.headers.cookie || '';
@@ -251,7 +249,7 @@ app.get("/api/auth/get-token", async (req: Request, res: Response) => {
   }
 });
 
-// Get current session endpoint - works with cookies or Authorization header
+// Get current session endpoint - BEFORE app.all()
 app.get("/api/auth/session", async (req: Request, res: Response) => {
   try {
     // Convert IncomingHttpHeaders to Record<string, string>
@@ -282,6 +280,8 @@ app.get("/api/auth/session", async (req: Request, res: Response) => {
     });
   }
 });
+
+app.all("/api/auth/*path", toNodeHandler(auth));
 
 // Middleware to handle Authorization header for cross-domain requests
 app.use((req: Request, res: Response, next: NextFunction) => {
