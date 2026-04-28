@@ -101,6 +101,16 @@ export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
+  // Cookie configuration for production
+  cookie: {
+    // Extract domain from auth URL
+    domain: new URL(config.auth.url).hostname === 'localhost' 
+      ? 'localhost' 
+      : new URL(config.auth.url).hostname,
+    httpOnly: true,
+    secure: config.auth.url.startsWith('https'), // true in production
+    sameSite: 'lax',
+  },
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: true,
