@@ -17,6 +17,9 @@ import { callRoutes } from './routes/call.routes';
 // Create Express application instance
 const app: Application = express();
 
+// Trust proxy - needed for Render and rate limiting
+app.set('trust proxy', 1);
+
 // ---  Global Middlewares ---
 // To receive cookies or sessions from the client (Next.js), set `credentials: true`.
 app.use(
