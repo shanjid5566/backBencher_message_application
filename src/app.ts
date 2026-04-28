@@ -207,6 +207,32 @@ app.post('/api/auth/reset-password', (req: Request, res: Response, next: NextFun
 
 app.all("/api/auth/*path", toNodeHandler(auth));
 
+// Get current session endpoint - works with cookies or Authorization header
+app.get("/api/auth/session", async (req: Request, res: Response) => {
+  try {
+    const session = await auth.api.getSession({ headers: req.headers });
+    
+    if (session && session.session) {
+      return res.status(200).json({
+        success: true,
+        session: session.session,
+        user: session.user,
+      });
+    }
+    
+    return res.status(401).json({
+      success: false,
+      message: "Not authenticated",
+    });
+  } catch (error) {
+    console.error("Session error:", error);
+    return res.status(401).json({
+      success: false,
+      message: "Session check failed",
+    });
+  }
+});
+
 // ---  Application Routes ---
 app.use("/api/v1/messages", messageRoutes);
 app.use("/api/v1/conversations", conversationRoutes);
