@@ -6,6 +6,7 @@ import { messageRoutes } from "./routes/message.routes";
 import { auth } from "../lib/auth";
 import { toNodeHandler } from "better-auth/node";
 import { config } from "./config";
+import { prisma } from "../lib/prisma";
 
 // Import Rate Limiter
 import rateLimit from "express-rate-limit";
@@ -256,6 +257,54 @@ app.get("/api/auth/get-token", async (req: Request, res: Response) => {
     });
   }
 });
+
+// Alternative: Get token by verifying user in database (POST endpoint)
+app.post("/api/auth/get-token-verified", async (req: Request, res: Response) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: "Email is required",
+      });
+    }
+
+    // Query database for user
+    const user = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // Create a simple token (can be JWT or session ID)
+    // For now, use a basic token format
+    const token = `${user.id}_${Date.now()}`;
+
+    return res.status(200).json({
+      success: true,
+      token,
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        image: user.image,
+      },
+    });
+  } catch (error) {
+    console.error("Token creation error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to create token",
+    });
+  }
+});
+
 
 // Get current session endpoint - BEFORE app.all()
 app.get("/api/auth/session", async (req: Request, res: Response) => {
