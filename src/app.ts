@@ -273,17 +273,6 @@ app.get("/api/auth/session", async (req: Request, res: Response) => {
   }
 });
 
-      message: "Not authenticated",
-    });
-  } catch (error) {
-    console.error("Session error:", error);
-    return res.status(401).json({
-      success: false,
-      message: "Session check failed",
-    });
-  }
-});
-
 // Middleware to handle Authorization header for cross-domain requests
 app.use((req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;
