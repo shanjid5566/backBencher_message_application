@@ -207,6 +207,40 @@ app.post('/api/auth/reset-password', (req: Request, res: Response, next: NextFun
 
 app.all("/api/auth/*path", toNodeHandler(auth));
 
+// Custom sign-in endpoint that returns session in response body (for cross-domain)
+app.post("/api/auth/sign-in/custom", async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { email, password } = req.body;
+
+    // Call better-auth's sign-in
+    const signInResponse = await auth.api.signInEmail({
+      email,
+      password,
+    });
+
+    // If sign-in was successful, get the session
+    if (signInResponse && signInResponse.session) {
+      return res.status(200).json({
+        success: true,
+        session: signInResponse.session,
+        user: signInResponse.user,
+        token: signInResponse.session.token, // Explicitly return token for localStorage
+      });
+    }
+
+    return res.status(401).json({
+      success: false,
+      message: "Sign-in failed",
+    });
+  } catch (error: any) {
+    console.error("Sign-in error:", error);
+    return res.status(401).json({
+      success: false,
+      message: error.message || "Authentication failed",
+    });
+  }
+});
+
 // Get current session endpoint - works with cookies or Authorization header
 app.get("/api/auth/session", async (req: Request, res: Response) => {
   try {
@@ -237,6 +271,30 @@ app.get("/api/auth/session", async (req: Request, res: Response) => {
       message: "Session check failed",
     });
   }
+});
+
+      message: "Not authenticated",
+    });
+  } catch (error) {
+    console.error("Session error:", error);
+    return res.status(401).json({
+      success: false,
+      message: "Session check failed",
+    });
+  }
+});
+
+// Middleware to handle Authorization header for cross-domain requests
+app.use((req: Request, res: Response, next: NextFunction) => {
+  const authHeader = req.headers.authorization;
+  
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    // Add token to cookies so better-auth can use it
+    const token = authHeader.substring(7);
+    req.headers.cookie = `${req.headers.cookie || ''}; auth_token=${token}`;
+  }
+  
+  next();
 });
 
 // ---  Application Routes ---
