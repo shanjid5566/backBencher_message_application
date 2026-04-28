@@ -210,7 +210,13 @@ app.all("/api/auth/*path", toNodeHandler(auth));
 // Get current session endpoint - works with cookies or Authorization header
 app.get("/api/auth/session", async (req: Request, res: Response) => {
   try {
-    const session = await auth.api.getSession({ headers: req.headers });
+    // Convert IncomingHttpHeaders to Record<string, string>
+    const headers = Object.entries(req.headers).reduce((acc, [key, value]) => {
+      acc[key] = String(value);
+      return acc;
+    }, {} as Record<string, string>);
+
+    const session = await auth.api.getSession({ headers });
     
     if (session && session.session) {
       return res.status(200).json({
