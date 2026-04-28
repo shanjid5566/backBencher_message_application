@@ -207,6 +207,50 @@ app.post('/api/auth/reset-password', (req: Request, res: Response, next: NextFun
 
 app.all("/api/auth/*path", toNodeHandler(auth));
 
+// Helper endpoint to get token from cookies (after sign-in)
+app.get("/api/auth/get-token", async (req: Request, res: Response) => {
+  try {
+    const cookieHeader = req.headers.cookie || '';
+    
+    // Extract the auth token from cookies
+    // Better-auth sets various cookies, we need to find the session token
+    const cookies = cookieHeader.split(';').reduce((acc, cookie) => {
+      const [key, value] = cookie.trim().split('=');
+      acc[key] = decodeURIComponent(value || '');
+      return acc;
+    }, {} as Record<string, string>);
+
+    // Get session to verify authentication
+    const headers = Object.entries(req.headers).reduce((acc, [key, value]) => {
+      acc[key] = String(value);
+      return acc;
+    }, {} as Record<string, string>);
+
+    const session = await auth.api.getSession({ headers });
+
+    if (session && session.session) {
+      return res.status(200).json({
+        success: true,
+        // Return the session token
+        token: session.session.token || Object.values(cookies)[0],
+        sessionId: session.session.id,
+        user: session.user,
+      });
+    }
+
+    return res.status(401).json({
+      success: false,
+      message: "Not authenticated",
+    });
+  } catch (error) {
+    console.error("Token fetch error:", error);
+    return res.status(401).json({
+      success: false,
+      message: "Failed to get token",
+    });
+  }
+});
+
 // Get current session endpoint - works with cookies or Authorization header
 app.get("/api/auth/session", async (req: Request, res: Response) => {
   try {
