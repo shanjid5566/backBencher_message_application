@@ -208,6 +208,10 @@ app.post('/api/auth/reset-password', (req: Request, res: Response, next: NextFun
 // Helper endpoint to get token from cookies (after sign-in) - BEFORE app.all()
 app.get("/api/auth/get-token", async (req: Request, res: Response) => {
   try {
+    console.log('📝 GET /api/auth/get-token called');
+    console.log('Cookies received:', req.headers.cookie);
+    console.log('All headers:', Object.keys(req.headers));
+    
     const cookieHeader = req.headers.cookie || '';
     
     // Extract the auth token from cookies
@@ -218,6 +222,8 @@ app.get("/api/auth/get-token", async (req: Request, res: Response) => {
       return acc;
     }, {} as Record<string, string>);
 
+    console.log('Parsed cookies:', cookies);
+
     // Get session to verify authentication
     const headers = Object.entries(req.headers).reduce((acc, [key, value]) => {
       acc[key] = String(value);
@@ -225,6 +231,8 @@ app.get("/api/auth/get-token", async (req: Request, res: Response) => {
     }, {} as Record<string, string>);
 
     const session = await auth.api.getSession({ headers });
+    
+    console.log('Session result:', session);
 
     if (session && session.session) {
       return res.status(200).json({
