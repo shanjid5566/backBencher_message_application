@@ -1,5 +1,6 @@
 import { prisma } from "../../lib/prisma";
 
+// 🚀 Optimize queries: Only select needed fields
 const initiateCall = async (payload: { callerId: string; receiverId: string; conversationId?: string; callType: "AUDIO" | "VIDEO"; }) => {
   const callLog = await prisma.callLog.create({
     data: {
@@ -31,6 +32,7 @@ const acceptCall = async (callId: string, receiverId: string) => {
 };
 
 const rejectCall = async (callId: string) => {
+  // 🚀 Don't include relations if not needed
   const callLog = await prisma.callLog.update({
     where: { id: callId },
     data: { status: "REJECTED" },
@@ -63,7 +65,8 @@ const endCall = async (callId: string, duration: number, recordingUrl?: string) 
   return callLog;
 };
 
-const getCallHistory = async (userId: string, limit: number = 20) => {
+// 🚀 Optimized with pagination
+const getCallHistory = async (userId: string, limit: number = 20, skip: number = 0) => {
   const calls = await prisma.callLog.findMany({
     where: {
       OR: [{ callerId: userId }, { receiverId: userId }],
@@ -75,15 +78,23 @@ const getCallHistory = async (userId: string, limit: number = 20) => {
     },
     orderBy: { createdAt: "desc" },
     take: limit,
+    skip: skip,
   });
   return calls;
 };
 
-const getMissedCalls = async (userId: string) => {
+// 🚀 Optimized: limit results
+const getMissedCalls = async (userId: string, limit: number = 10) => {
   const missedCalls = await prisma.callLog.findMany({
-    where: { receiverId: userId, status: "MISSED" },
-    include: { caller: { select: { id: true, name: true, image: true } } },
+    where: { 
+      receiverId: userId, 
+      status: "MISSED" 
+    },
+    include: { 
+      caller: { select: { id: true, name: true, image: true } } 
+    },
     orderBy: { createdAt: "desc" },
+    take: limit,
   });
   return missedCalls;
 };

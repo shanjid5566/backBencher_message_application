@@ -5,14 +5,25 @@ import { config } from "../src/config";
 
 const connectionString = `${config.databaseUrl}`;
 
-// 1. Initialize Connection Pool
-const pool = new Pool({ connectionString });
+// 🚀 Optimized connection pool for Render free tier
+const pool = new Pool({ 
+  connectionString,
+  max: 10,                   // 🚀 Max connections
+  min: 2,                    // Keep 2 connections warm
+  idleTimeoutMillis: 20000,  // 🚀 Close idle connections after 20s
+  connectionTimeoutMillis: 8000,  // 🚀 Fail fast
+  allowExitOnIdle: true,     // 🚀 Exit on idle
+});
 
 // 2. Initialize Prisma PG Adapter
 const adapter = new PrismaPg(pool);
 
-// 3. Instantiate Base Prisma Client
-const basePrisma = new PrismaClient({ adapter });
+// 3. Instantiate Base Prisma Client with optimized settings
+const basePrisma = new PrismaClient({ 
+  adapter,
+  // 🚀 Log only errors in production
+  log: process.env.NODE_ENV === 'development' ? ['query', 'error'] : ['error'],
+});
 
 // List of models that actually have the 'deletedAt' field in schema.prisma
 const softDeleteModels = ['User', 'Conversation', 'Message'];
