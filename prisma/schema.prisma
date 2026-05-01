@@ -167,6 +167,12 @@ model CallLog {
   status       CallStatus @default(MISSED)
 
   createdAt DateTime @default(now())
+
+  // 🚀 Performance Indexes
+  @@index([callerId])        // Fast lookup for caller's call history
+  @@index([receiverId])      // Fast lookup for receiver's call history
+  @@index([status])          // Fast filter by status
+  @@index([createdAt])       // Fast sort by date
 }
 
 enum CallType {
